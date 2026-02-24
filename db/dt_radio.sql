@@ -56,6 +56,21 @@ CREATE TABLE `tbl_artist` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_ads_premium`
+--
+
+CREATE TABLE `tbl_ads_premium` (
+  `id` int(11) NOT NULL,
+  `crea_name` varchar(255) NOT NULL,
+  `image_url` text NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_banner`
 --
 
@@ -626,6 +641,12 @@ ALTER TABLE `tbl_artist`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_ads_premium`
+--
+ALTER TABLE `tbl_ads_premium`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_banner`
 --
 ALTER TABLE `tbl_banner`
@@ -789,6 +810,12 @@ ALTER TABLE `tbl_admin`
 -- AUTO_INCREMENT for table `tbl_artist`
 --
 ALTER TABLE `tbl_artist`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tbl_ads_premium`
+--
+ALTER TABLE `tbl_ads_premium`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --

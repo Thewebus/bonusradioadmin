@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\Song;
 use App\Models\Language;
 use App\Models\Artist;
+use App\Models\Ads_Premium;
 use App\Models\Category;
 use App\Models\Banner;
 use App\Models\Comment;
@@ -1227,6 +1228,37 @@ class HomeController extends Controller
                     }
                 }
 
+                return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data, $pagination);
+            } else {
+                return $this->common->API_Response(400, __('api_msg.data_not_found'));
+            }
+        } catch (Exception $e) {
+            return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
+        }
+    }
+    public function get_ads_premium(Request $request)
+    {
+        try {
+
+            $page_size = 0;
+            $current_page = 0;
+            $more_page = false;
+
+            $data = Ads_Premium::where('status', 1)->orderBy('id', 'desc');
+
+            $total_rows = $data->count();
+            $total_page = $this->page_limit;
+            $page_size = ceil($total_rows / $total_page);
+            $current_page = $request->page_no ?? 1;
+            $offset = $current_page * $total_page - $total_page;
+
+            $more_page = $this->common->more_page($current_page, $page_size);
+            $pagination = $this->common->pagination_array($total_rows, $page_size, $current_page, $more_page);
+
+            $data->take($total_page)->offset($offset);
+            $data = $data->get();
+
+            if (count($data) > 0) {
                 return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data, $pagination);
             } else {
                 return $this->common->API_Response(400, __('api_msg.data_not_found'));

@@ -94,6 +94,12 @@
                 <span>Live Event</span>
             </a>
         </li>
+        <li class="side_line {{ request()->routeIs('adspremium*') ? 'active' : '' }}">
+            <a href="{{ route('adspremium.index') }}">
+                <i class="fa-solid fa-image fa-2xl menu-icon"></i>
+                <span>Ads Premium</span>
+            </a>
+        </li>
         <p class="partition"><span>{{__('Label.interaction')}}</span></p>
         <li class="side_line {{ request()->routeIs('comment*') ? 'active' : '' }}">
             <a href="{{ route('comment.index') }}">

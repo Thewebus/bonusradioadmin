@@ -43,6 +43,10 @@ return [
     'add_podcast' => "Add Poadcast",
     'live_evenet' => "Live Event",
     'add_live_evenet' => "Add Live Event",
+    'ads_premium' => "Ads Premium",
+    'add_ads_premium' => "Add Ads Premium",
+    'nom_crea' => "Nom CREA",
+    'lien_url' => "Lien URL",
     // Admin Penal
     'thumbnail_image' => "Thumbnail Image",
     'Dashboard' => "Dashboard",

@@ -43,7 +43,7 @@ class DashboardController extends Controller
             $params['CurrentMounthCount'] = Transaction::whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->sum('price');
             $params['TransactionCount'] = Transaction::sum('price');
             $params['PackageCount'] = Package::count();
-            $params['LiveEventCount'] = Live_Event::count();
+            $params['LiveEventCount'] = Live_Event::where('is_vod', 0)->count();
             $params['LiveEventEarningCount'] = Event_Join_User::sum('price');
 
             // User Statistice

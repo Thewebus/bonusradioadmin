@@ -265,7 +265,7 @@ class Common extends Model
     }
     public function update_liveevent_status()
     {
-        $all_data = Live_Event::get();
+        $all_data = Live_Event::where('is_vod', 0)->get();
         for ($i = 0; $i < count($all_data); $i++) {
 
             if ($all_data[$i]['date'] < date("Y-m-d")) {

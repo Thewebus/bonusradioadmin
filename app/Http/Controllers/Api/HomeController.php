@@ -30,6 +30,7 @@ use App\Models\Section;
 use App\Models\Social_Link;
 use App\Models\User;
 use App\Models\User_Notification_Tracking;
+use App\Models\Video_Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
@@ -989,7 +990,7 @@ class HomeController extends Controller
             } else if ($type == 2) {
                 $data = Podcast::where('title', 'like', '%' . $name . '%')->where('status', 1)->orderBy('id', "DESC");
             } else if ($type == 3) {
-                $data = Live_Event::where('title', 'like', '%' . $name . '%')->where('status', 1)->orderBy('id', "DESC");
+                $data = Live_Event::where('is_vod', 0)->where('title', 'like', '%' . $name . '%')->where('status', 1)->orderBy('id', "DESC");
             }
 
             $total_rows = $data->count();
@@ -1201,7 +1202,7 @@ class HomeController extends Controller
             $current_page = 0;
             $more_page = false;
 
-            $data = Live_Event::where('status', 1)->orderBy('id', 'DESC');
+            $data = Live_Event::where('is_vod', 0)->where('status', 1)->orderBy('id', 'DESC');
 
             $total_rows = $data->count();
             $total_page = $this->page_limit;
@@ -1296,6 +1297,87 @@ class HomeController extends Controller
             return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
         }
     }
+    public function get_video_category(Request $request)
+    {
+        try {
+
+            $data = Video_Category::where('status', 1)->orderBy('name', 'ASC')->get();
+
+            if (count($data) > 0) {
+                return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data);
+            } else {
+                return $this->common->API_Response(400, __('api_msg.data_not_found'));
+            }
+        } catch (Exception $e) {
+            return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
+        }
+    }
+    // Video on demand — same shape as get_live_event (rows share tbl_live_event) plus category_id/category_name.
+    // Optional params: category_id, search, page_no, user_id. `date` is the last day a video stays available.
+    public function get_video(Request $request)
+    {
+        try {
+
+            $user_id = isset($request->user_id) ? $request->user_id : 0;
+
+            $page_size = 0;
+            $current_page = 0;
+            $more_page = false;
+
+            $data = Live_Event::where('is_vod', 1)
+                ->where('status', 1)
+                ->where('date', '>=', date('Y-m-d'))
+                ->orderBy('id', 'DESC');
+
+            if (!empty($request->category_id)) {
+                $data->where('category_id', $request->category_id);
+            }
+            if (!empty($request->search)) {
+                $data->where('title', 'like', '%' . $request->search . '%');
+            }
+
+            $total_rows = $data->count();
+            $total_page = $this->page_limit;
+            $page_size = ceil($total_rows / $total_page);
+            $current_page = $request->page_no ?? 1;
+            $offset = $current_page * $total_page - $total_page;
+
+            $more_page = $this->common->more_page($current_page, $page_size);
+            $pagination = $this->common->pagination_array($total_rows, $page_size, $current_page, $more_page);
+
+            $data->take($total_page)->offset($offset);
+            $data = $data->get();
+
+            if (count($data) > 0) {
+
+                $this->common->imageNameToUrl($data, 'portrait_img', $this->folder_live_event);
+                $this->common->imageNameToUrl($data, 'landscape_img', $this->folder_live_event);
+
+                $category_names = Video_Category::pluck('name', 'id');
+
+                for ($i = 0; $i < count($data); $i++) {
+                    // Uploaded files store only the file name; expose it as a full URL like the images.
+                    if ($data[$i]['video_source'] == 2) {
+                        $data[$i]['link'] = config('app.image_url') . 'video/' . $data[$i]['link'];
+                    }
+
+                    $data[$i]['category_name'] = $category_names[$data[$i]['category_id']] ?? '';
+
+                    $data[$i]['is_join'] = 0;
+                    $check = Event_Join_User::where('user_id', $user_id)->where('live_event_id', $data[$i]['id'])->where('status', 1)->first();
+                    if (isset($check) && $check != null) {
+                        $data[$i]['is_join'] = 1;
+                    }
+                }
+
+                return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data, $pagination);
+            } else {
+                return $this->common->API_Response(400, __('api_msg.data_not_found'));
+            }
+        } catch (Exception $e) {
+            return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
+        }
+    }
     public function join_live_event(Request $request)
     {
         try {
@@ -1381,7 +1463,7 @@ class HomeController extends Controller
                         $data[$i]['data'] = $query;
                     } else if ($data[$i]['type'] == 3) {
 
-                        $content = Live_Event::where('status', 1);
+                        $content = Live_Event::where('is_vod', 0)->where('status', 1);
 
                         if ($data[$i]['order_by_upload'] == 1) {
                             $content->orderBy('id', 'desc');
@@ -1500,7 +1582,7 @@ class HomeController extends Controller
                     $data = $content;
                 } else if ($section['type'] == 3) {
 
-                    $content = Live_Event::where('status', 1);
+                    $content = Live_Event::where('is_vod', 0)->where('status', 1);
 
                     if ($section['order_by_upload'] == 1) {
                         $content->orderBy('id', 'desc');

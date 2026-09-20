@@ -45,6 +45,13 @@ return [
     'add_live_evenet' => "Add Live Event",
     'ads_premium' => "Ads Premium",
     'add_ads_premium' => "Add Ads Premium",
+    'videos_vod' => "Videos",
+    'add_video_vod' => "Add Video",
+    'video_categories' => "Video Categories",
+    'add_video_category' => "Add Video Category",
+    'available_until' => "Available until",
+    'video_source_link' => "External link",
+    'video_source_upload' => "Upload a file",
     'nom_crea' => "Nom CREA",
     'lien_url' => "Lien URL",
     // Admin Penal

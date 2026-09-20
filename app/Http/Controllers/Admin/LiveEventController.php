@@ -31,9 +31,9 @@ class LiveEventController extends Controller
 
                 $input_search = $request['input_search'];
                 if ($input_search != null && isset($input_search)) {
-                    $data = Live_Event::where('title', 'LIKE', "%{$input_search}%")->latest()->get();
+                    $data = Live_Event::where('is_vod', 0)->where('title', 'LIKE', "%{$input_search}%")->latest()->get();
                 } else {
-                    $data = Live_Event::latest()->get();
+                    $data = Live_Event::where('is_vod', 0)->latest()->get();
                 }
 
                 $this->common->imageNameToUrl($data, 'portrait_img', $this->folder);

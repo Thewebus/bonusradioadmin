@@ -295,6 +295,9 @@ CREATE TABLE `tbl_live_event` (
   `is_paid` int(11) NOT NULL COMMENT '1-Paid,0-Free',
   `price` int(11) NOT NULL,
   `type` int(11) NOT NULL COMMENT '1- Audio, 2- Video',
+  `is_vod` int(11) NOT NULL DEFAULT 0 COMMENT '0-Live event, 1-Video on demand',
+  `category_id` int(11) DEFAULT NULL COMMENT 'tbl_video_category.id (video on demand only)',
+  `video_source` int(11) NOT NULL DEFAULT 1 COMMENT '1-External link, 2-Uploaded file (link holds the file name)',
   `link` varchar(255) NOT NULL,
   `description` text NOT NULL,
   `status` int(11) NOT NULL DEFAULT 1 COMMENT '1-Open, 0-Close',
@@ -613,6 +616,20 @@ CREATE TABLE `tbl_user` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_video_category`
+--
+
+CREATE TABLE `tbl_video_category` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_user_notification_tracking`
 --
 
@@ -797,6 +814,12 @@ ALTER TABLE `tbl_user_notification_tracking`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_video_category`
+--
+ALTER TABLE `tbl_video_category`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -966,6 +989,12 @@ ALTER TABLE `tbl_user`
 -- AUTO_INCREMENT for table `tbl_user_notification_tracking`
 --
 ALTER TABLE `tbl_user_notification_tracking`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tbl_video_category`
+--
+ALTER TABLE `tbl_video_category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 

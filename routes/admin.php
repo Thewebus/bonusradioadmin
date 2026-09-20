@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Admin\AdmobSettingController;
 use App\Http\Controllers\Admin\AdsPremiumController;
+use App\Http\Controllers\Admin\VideoController;
+use App\Http\Controllers\Admin\VideoCategoryController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\ArtistController;
 use App\Http\Controllers\Admin\SongController;
@@ -121,6 +123,10 @@ Route::group(['middleware' => 'installation'], function () {
         Route::get('liveevent/{id}', [LiveEventController::class, 'LiveEventIndex'])->name('liveevent.user.index');
         // Ads Premium
         Route::resource('adspremium', AdsPremiumController::class)->only(['index']);
+        // Videos (video on demand)
+        Route::resource('video', VideoController::class)->only(['index']);
+        Route::post('video/saveChunk', [VideoController::class, 'saveChunk'])->name('video.savechunk');
+        Route::resource('videocategory', VideoCategoryController::class)->only(['index']);
         // Comment
         Route::resource('comment', CommentController::class)->only(['index', 'show']);
         // Package
@@ -181,6 +187,9 @@ Route::group(['middleware' => 'installation'], function () {
             Route::post('liveevent/delete/{liveevent_id}/{id}', [LiveEventController::class, 'LiveEventDelete'])->name('liveevent.user.delete');
             // Ads Premium
             Route::resource('adspremium', AdsPremiumController::class)->only(['store', 'update', 'destroy']);
+            // Videos (video on demand)
+            Route::resource('video', VideoController::class)->only(['store', 'update', 'destroy']);
+            Route::resource('videocategory', VideoCategoryController::class)->only(['store', 'update', 'destroy']);
             // Package
             Route::resource('package', PackageController::class)->only(['store', 'update', 'destroy']);
             // Transaction

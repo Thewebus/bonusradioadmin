@@ -100,6 +100,18 @@
                 <span>Ads Premium</span>
             </a>
         </li>
+        <li class="side_line {{ request()->routeIs('video.*') ? 'active' : '' }}">
+            <a href="{{ route('video.index') }}">
+                <i class="fa-solid fa-film fa-2xl menu-icon"></i>
+                <span>{{ __('Label.videos_vod') }}</span>
+            </a>
+        </li>
+        <li class="side_line {{ request()->routeIs('videocategory*') ? 'active' : '' }}">
+            <a href="{{ route('videocategory.index') }}">
+                <i class="fa-solid fa-tags fa-2xl menu-icon"></i>
+                <span>{{ __('Label.video_categories') }}</span>
+            </a>
+        </li>
         <p class="partition"><span>{{__('Label.interaction')}}</span></p>
         <li class="side_line {{ request()->routeIs('comment*') ? 'active' : '' }}">
             <a href="{{ route('comment.index') }}">

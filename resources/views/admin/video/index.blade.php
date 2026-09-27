@@ -154,7 +154,7 @@
                         </div>
                     </div>
                         <div class="border-top pt-3 text-right">
-                            <button type="button" class="btn btn-default mw-120" onclick="save_video()">{{__('Label.SAVE')}}</button>
+                            <button type="button" id="video_save_btn" class="btn btn-default mw-120" onclick="save_video()">{{__('Label.SAVE')}}</button>
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         </div>
                     </form>
@@ -335,7 +335,7 @@
                             </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default mw-120" onclick="update_video()">{{__('Label.UPDATE')}}</button>
+                                <button type="button" id="edit_video_save_btn" class="btn btn-default mw-120" onclick="update_video()">{{__('Label.UPDATE')}}</button>
                                 <button type="button" class="btn btn-cancel mw-120" data-dismiss="modal">{{__('Label.CLOSE')}}</button>
                                 <input type="hidden" name="_method" value="PATCH">
                             </div>
@@ -385,6 +385,9 @@
                         while (up.files.length > 1) { up.removeFile(up.files[0]); }
                         $('#' + prefix + 'video_filelist').text(files[0].name + ' (' + plupload.formatSize(files[0].size) + ')');
                         $('#' + prefix + 'video_file').val('');
+                        // Block the save button for the whole upload — clicking Save before it
+                        // finishes is the main reason "video_file" ends up empty on submit.
+                        $('#' + prefix + 'video_save_btn').prop('disabled', true).text('Upload en cours...');
                         up.start();
                     },
                     UploadProgress: function(up, file) {
@@ -392,13 +395,20 @@
                     },
                     FileUploaded: function(up, file, info) {
                         var response = JSON.parse(info.response);
+                        var btn = $('#' + prefix + 'video_save_btn');
+                        var label = prefix === '' ? '{{__('Label.SAVE')}}' : '{{__('Label.UPDATE')}}';
+                        btn.prop('disabled', false).text(label);
                         if (response.result) {
                             $('#' + prefix + 'video_file').val(response.result);
                             $('#' + prefix + 'video_progress').text('100% - uploaded');
+                        } else {
+                            toastr.error("L'upload a échoué, réessaie.");
                         }
                     },
                     Error: function(up, err) {
                         $('#' + prefix + 'video_progress').text('');
+                        var label = prefix === '' ? '{{__('Label.SAVE')}}' : '{{__('Label.UPDATE')}}';
+                        $('#' + prefix + 'video_save_btn').prop('disabled', false).text(label);
                         toastr.error(err.message, 'Upload error');
                     }
                 }
@@ -484,9 +494,45 @@
             });
         });
 
+        // Catches the most common reasons the server would reject the form, with a
+        // specific message, before even sending it — in particular the upload race
+        // condition where "SAVE" is clicked before the chunked video upload finished
+        // (video_file is still empty at that point, and the server would otherwise
+        // just report "The video file field is required.").
+        function validateVideoForm(prefix, requireImages) {
+            var form = prefix === '' ? '#video' : '#update_video';
+            if (!$('#' + prefix + 'title').val()) {
+                toastr.error('Le titre est obligatoire.'); return false;
+            }
+            if (!$('#' + prefix + 'category_id').val()) {
+                toastr.error("Choisis une catégorie (crée-en une d'abord sur la page Video Categories si la liste est vide)."); return false;
+            }
+            if ($('#' + prefix + 'video_source').val() == 2) {
+                if (!$('#' + prefix + 'video_file').val()) {
+                    toastr.error("L'upload du fichier vidéo n'est pas terminé (attends 100 % avant d'enregistrer), ou aucun fichier n'a été choisi.");
+                    return false;
+                }
+            } else if (!$('#' + prefix + 'link').val()) {
+                toastr.error('Le lien vidéo est obligatoire.'); return false;
+            }
+            if ($('input[name=is_paid]:checked', form).val() == 1 && !$('#' + prefix + 'price').val()) {
+                toastr.error('Le prix est obligatoire pour une vidéo payante.'); return false;
+            }
+            if (requireImages) {
+                if (!$('#imageUpload')[0].files.length) {
+                    toastr.error("L'image portrait est obligatoire."); return false;
+                }
+                if (!$('#imageUploadLandscape')[0].files.length) {
+                    toastr.error("L'image paysage est obligatoire."); return false;
+                }
+            }
+            return true;
+        }
+
         function save_video() {
             var Check_Admin = '<?php echo Check_Admin_Access(); ?>';
             if (Check_Admin == 1) {
+                if (!validateVideoForm('', true)) { return; }
                 $("#dvloader").show();
                 var formData = new FormData($("#video")[0]);
                 $.ajax({
@@ -544,6 +590,7 @@
         function update_video() {
             var Check_Admin = '<?php echo Check_Admin_Access(); ?>';
             if (Check_Admin == 1) {
+                if (!validateVideoForm('edit_', false)) { return; }
                 $("#dvloader").show();
                 var formData = new FormData($("#update_video")[0]);
 

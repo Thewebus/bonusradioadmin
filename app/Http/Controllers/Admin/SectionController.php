@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\Language;
 use App\Models\Section;
+use App\Models\Video_Category;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Auth\Events\Validated;
@@ -24,6 +25,9 @@ class SectionController extends Controller
             $params['category'] = Category::latest()->get();
             $params['language'] = Language::latest()->get();
             $params['city'] = City::latest()->get();
+            // Video sections filter by tbl_video_category, a separate table
+            // from the radio-content tbl_category above — never mix the two.
+            $params['video_category'] = Video_Category::where('status', 1)->latest()->get();
 
             return view('admin.section.index', $params);
         } catch (Exception $e) {
@@ -79,7 +83,7 @@ class SectionController extends Controller
                 }
             }
 
-            if ($request['type'] == 3 || $request['type'] == 4 || $request['type'] == 5 || $request['type'] == 6 || $request['type'] == 7) {
+            if ($request['type'] == 3 || $request['type'] == 4 || $request['type'] == 5 || $request['type'] == 6 || $request['type'] == 7 || $request['type'] == 8) {
                 $rules = [
                     'screen_layout' => 'required',
                     'no_of_content' => 'required|integer|gt:0',
@@ -87,6 +91,9 @@ class SectionController extends Controller
                 ];
 
                 if ($request['type'] == 3) {
+                    $rules['is_paid'] = 'required';
+                } elseif ($request['type'] == 8) {
+                    $rules['category_id'] = 'required';
                     $rules['is_paid'] = 'required';
                 } else {
                     $rules['order_by_upload'] = 'required';
@@ -138,12 +145,15 @@ class SectionController extends Controller
                 $requestData['order_by_upload'] = isset($request['order_by_upload']) ? $request['order_by_upload'] : 1;
                 $requestData['order_by_play'] = isset($request['order_by_play']) ? $request['order_by_play'] : 1;
 
-            } elseif ($requestData['type'] == 3 || $requestData['type'] == 4 || $requestData['type'] == 5 || $requestData['type'] == 6 || $requestData['type'] == 7) {
-                
+            } elseif ($requestData['type'] == 3 || $requestData['type'] == 4 || $requestData['type'] == 5 || $requestData['type'] == 6 || $requestData['type'] == 7 || $requestData['type'] == 8) {
+
                 $requestData['no_of_content'] = isset($request['no_of_content'])  ? $request['no_of_content'] : 1;
                 $requestData['view_all'] = isset($request['view_all'])  ? $request['view_all'] : 0;
 
                 if($requestData['type'] == 3){
+                    $requestData['is_paid'] = isset($request['is_paid']) ? $request['is_paid'] : 0;
+                } elseif($requestData['type'] == 8){
+                    $requestData['category_id'] = isset($request['category_id']) ? $request['category_id'] : 0;
                     $requestData['is_paid'] = isset($request['is_paid']) ? $request['is_paid'] : 0;
                 } else{
                     $requestData['order_by_upload'] = isset($request['order_by_upload']) ? $request['order_by_upload'] : 1;
@@ -242,7 +252,7 @@ class SectionController extends Controller
                 }
             }
 
-            if ($request['type'] == 3 || $request['type'] == 4 || $request['type'] == 5 || $request['type'] == 6 || $request['type'] == 7) {
+            if ($request['type'] == 3 || $request['type'] == 4 || $request['type'] == 5 || $request['type'] == 6 || $request['type'] == 7 || $request['type'] == 8) {
                 $rules = [
                     'screen_layout' => 'required',
                     'no_of_content' => 'required|integer|gt:0',
@@ -250,6 +260,9 @@ class SectionController extends Controller
                 ];
 
                 if ($request['type'] == 3) {
+                    $rules['is_paid'] = 'required';
+                } elseif ($request['type'] == 8) {
+                    $rules['category_id'] = 'required';
                     $rules['is_paid'] = 'required';
                 } else {
                     $rules['order_by_upload'] = 'required';
@@ -301,12 +314,15 @@ class SectionController extends Controller
                 $requestData['order_by_upload'] = isset($request['order_by_upload']) ? $request['order_by_upload'] : 1;
                 $requestData['order_by_play'] = isset($request['order_by_play']) ? $request['order_by_play'] : 1;
 
-            } elseif ($requestData['type'] == 3 || $requestData['type'] == 4 || $requestData['type'] == 5 || $requestData['type'] == 6 || $requestData['type'] == 7) {
-                
+            } elseif ($requestData['type'] == 3 || $requestData['type'] == 4 || $requestData['type'] == 5 || $requestData['type'] == 6 || $requestData['type'] == 7 || $requestData['type'] == 8) {
+
                 $requestData['no_of_content'] = isset($request['no_of_content'])  ? $request['no_of_content'] : 1;
                 $requestData['view_all'] = isset($request['view_all'])  ? $request['view_all'] : 0;
 
                 if($requestData['type'] == 3){
+                    $requestData['is_paid'] = isset($request['is_paid']) ? $request['is_paid'] : 0;
+                } elseif($requestData['type'] == 8){
+                    $requestData['category_id'] = isset($request['category_id']) ? $request['category_id'] : 0;
                     $requestData['is_paid'] = isset($request['is_paid']) ? $request['is_paid'] : 0;
                 } else{
                     $requestData['order_by_upload'] = isset($request['order_by_upload']) ? $request['order_by_upload'] : 1;

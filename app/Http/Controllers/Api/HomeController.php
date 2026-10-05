@@ -1538,6 +1538,42 @@ class HomeController extends Controller
 
                         $data[$i]['data'] = $content->take($data[$i]['no_of_content'])->get();
                         $this->common->imageNameToUrl($data[$i]['data'], 'image', $this->folder_city);
+                    } else if ($data[$i]['type'] == 8) {
+
+                        $content = Live_Event::where('is_vod', 1)->where('status', 1)->where('category_id', $data[$i]['category_id']);
+
+                        if ($data[$i]['order_by_upload'] == 1) {
+                            $content->orderBy('id', 'desc');
+                        } else {
+                            $content->orderBy('id', 'asc');
+                        }
+
+                        if ($data[$i]['is_paid'] == 0) {
+                            $content->where('is_paid', 0);
+                        } else if ($data[$i]['is_paid'] == 1) {
+                            $content->where('is_paid', 1);
+                        }
+                        $query = $content->take($data[$i]['no_of_content'])->get();
+
+                        $this->common->imageNameToUrl($query, 'portrait_img', $this->folder_live_event);
+                        $this->common->imageNameToUrl($query, 'landscape_img', $this->folder_live_event);
+
+                        $category_names = Video_Category::pluck('name', 'id');
+
+                        for ($j = 0; $j < count($query); $j++) {
+                            if ($query[$j]['video_source'] == 2) {
+                                $query[$j]['link'] = config('app.image_url') . 'video/' . $query[$j]['link'];
+                            }
+                            $query[$j]['category_name'] = $category_names[$query[$j]['category_id']] ?? '';
+
+                            $query[$j]['is_join'] = 0;
+                            $check = Event_Join_User::where('user_id', $user_id)->where('live_event_id', $query[$j]['id'])->where('status', 1)->first();
+                            if (isset($check) && $check != null) {
+                                $query[$j]['is_join'] = 1;
+                            }
+                        }
+
+                        $data[$i]['data'] = $query;
                     }
                 }
                 return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data, $pagination);
@@ -1620,6 +1656,23 @@ class HomeController extends Controller
                     }
 
                     $data = $content;
+                } else if ($section['type'] == 8) {
+
+                    $content = Live_Event::where('is_vod', 1)->where('status', 1)->where('category_id', $section['category_id']);
+
+                    if ($section['order_by_upload'] == 1) {
+                        $content->orderBy('id', 'desc');
+                    } else {
+                        $content->orderBy('id', 'asc');
+                    }
+
+                    if ($section['is_paid'] == 0) {
+                        $content->where('is_paid', 0);
+                    } else if ($section['is_paid'] == 1) {
+                        $content->where('is_paid', 1);
+                    }
+
+                    $data = $content;
                 }
             } else {
                 return $this->common->API_Response(400, __('api_msg.data_not_found'));
@@ -1679,6 +1732,21 @@ class HomeController extends Controller
                     } else if ($section['type'] == 7) {
 
                         $data[$i]['image'] = $this->common->Get_Image($this->folder_city, $data[$i]['image']);
+                    } else if ($section['type'] == 8) {
+
+                        $data[$i]['portrait_img'] = $this->common->Get_Image($this->folder_live_event, $data[$i]['portrait_img']);
+                        $data[$i]['landscape_img'] = $this->common->Get_Image($this->folder_live_event, $data[$i]['landscape_img']);
+
+                        if ($data[$i]['video_source'] == 2) {
+                            $data[$i]['link'] = config('app.image_url') . 'video/' . $data[$i]['link'];
+                        }
+                        $data[$i]['category_name'] = Video_Category::where('id', $data[$i]['category_id'])->value('name') ?? '';
+
+                        $data[$i]['is_join'] = 0;
+                        $check = Event_Join_User::where('user_id', $user_id)->where('live_event_id', $data[$i]['id'])->where('status', 1)->first();
+                        if (isset($check) && $check != null) {
+                            $data[$i]['is_join'] = 1;
+                        }
                     }
                 }
                 return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data, $pagination);

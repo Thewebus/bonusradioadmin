@@ -55,6 +55,7 @@
                                         <option value="5">{{__('Label.Category')}}</option>
                                         <option value="6">{{__('Label.Language')}}</option>
                                         <option value="7">{{__('Label.City')}}</option>
+                                        <option value="8">{{__('Label.Video')}}</option>
                                     </select>
                                 </div>
                             </div>
@@ -93,6 +94,19 @@
                                     <select class="form-control" style="width:100%!important;" name="category_id" id="category_id">
                                         <option value="0">{{__('Label.all_category')}}</option>
                                         @foreach ($category as $key => $value)
+                                        <option value="{{ $value->id}}">
+                                            {{ $value->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 video_category_drop">
+                                <div class="form-group ">
+                                    <label>{{__('Label.Category')}}<span class="text-danger">*</span></label>
+                                    <select class="form-control" style="width:100%!important;" name="video_category_id" id="video_category_id">
+                                        <option value="">{{__('Label.select_category')}}</option>
+                                        @foreach ($video_category as $key => $value)
                                         <option value="{{ $value->id}}">
                                             {{ $value->name }}
                                         </option>
@@ -254,6 +268,7 @@
                                             <option value="5">{{__('Label.Category')}}</option>
                                             <option value="6">{{__('Label.Language')}}</option>
                                             <option value="7">{{__('Label.City')}}</option>
+                                            <option value="8">{{__('Label.Video')}}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -292,6 +307,19 @@
                                             <select class="form-control" style="width:100%!important;" name="category_id" id="edit_category_id">
                                                 <option value="0">{{__('Label.all_category')}}</option>
                                                 @foreach ($category as $key => $value)
+                                                <option value="{{ $value->id}}">
+                                                    {{ $value->name }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 edit_video_category_drop">
+                                        <div class="form-group ">
+                                            <label>{{__('Label.Category')}}<span class="text-danger">*</span></label>
+                                            <select class="form-control" style="width:100%!important;" name="video_category_id" id="edit_video_category_id">
+                                                <option value="">{{__('Label.select_category')}}</option>
+                                                @foreach ($video_category as $key => $value)
                                                 <option value="{{ $value->id}}">
                                                     {{ $value->name }}
                                                 </option>
@@ -453,19 +481,23 @@
     <script>
         $('#artist_id').select2();
         $('#category_id').select2();
+        $('#video_category_id').select2();
         $('#language_id').select2();
         $('#city_id').select2();
         $('#edit_artist_id').select2({
-            dropdownParent: $('#editsectioneModal') 
+            dropdownParent: $('#editsectioneModal')
         });
         $('#edit_category_id').select2({
-            dropdownParent: $('#editsectioneModal') 
+            dropdownParent: $('#editsectioneModal')
+        });
+        $('#edit_video_category_id').select2({
+            dropdownParent: $('#editsectioneModal')
         });
         $('#edit_language_id').select2({
-            dropdownParent: $('#editsectioneModal') 
+            dropdownParent: $('#editsectioneModal')
         });
         $('#edit_city_id').select2({
-            dropdownParent: $('#editsectioneModal') 
+            dropdownParent: $('#editsectioneModal')
         });
 
         $(document).ready(function() {
@@ -473,6 +505,7 @@
             $(".screen_layout").hide();
             $(".artist_drop").hide();
             $(".category_drop").hide();
+            $(".video_category_drop").hide();
             $(".language_drop").hide();
             $(".city_drop").hide();
             $(".no_of_content").hide();
@@ -535,11 +568,12 @@
                     $(".order_by_upload").show();
                     $(".order_by_play").show();
                     $(".is_premium").show();
-                } else if (optionValue == 3 || optionValue == 4 || optionValue == 5 || optionValue == 6 || optionValue == 7){
+                } else if (optionValue == 3 || optionValue == 4 || optionValue == 5 || optionValue == 6 || optionValue == 7 || optionValue == 8){
 
                     $(".artist_drop").hide();
                     $(".city_drop").hide();
                     $(".category_drop").hide();
+                    $(".video_category_drop").hide();
                     $(".language_drop").hide();
                     $(".order_by_upload").hide();
                     $(".order_by_play").hide();
@@ -550,7 +584,7 @@
                     $("#screen_layout option[value='landscape']").hide();
                     $("#screen_layout option[value='portrait']").hide();
                     $("#screen_layout option[value='sqaure']").hide();
-                    
+
                     if(optionValue == 3){
 
                         $("#screen_layout option[value='live_event']").show();
@@ -609,13 +643,26 @@
                         $(".no_of_content").show();
                         $(".order_by_upload").show();
                         $(".view_all").show();
-                        $(".is_paid").hide();  
+                        $(".is_paid").hide();
+                    } else if (optionValue == 8){
+
+                        $("#screen_layout option[value='live_event']").show();
+                        $("#screen_layout option[value='artist']").hide();
+                        $("#screen_layout option[value='category']").hide();
+                        $("#screen_layout option[value='language']").hide();
+                        $("#screen_layout option[value='city']").hide();
+
+                        $(".video_category_drop").show();
+                        $(".no_of_content").show();
+                        $(".view_all").show();
+                        $(".is_paid").show();
                     }
                 } else {
 
                     $(".screen_layout").hide();
                     $(".artist_drop").hide();
                     $(".category_drop").hide();
+                    $(".video_category_drop").hide();
                     $(".language_drop").hide();
                     $(".city_drop").hide();
                     $(".no_of_content").hide();
@@ -635,6 +682,13 @@
 
                 $("#dvloader").show();
                 var formData = new FormData($("#section")[0]);
+                // Video sections store their category_id from a separate
+                // tbl_video_category dropdown (named video_category_id to avoid
+                // colliding with the radio-content category_id field above);
+                // copy it into category_id, the field the backend expects.
+                if ($('#type').val() == 8) {
+                    formData.set('category_id', $('#video_category_id').val());
+                }
                 $.ajax({
                     type: 'POST',
                     url: '{{ route("section.store") }}',
@@ -684,6 +738,8 @@
                         var type = "{{__('Label.Language')}}";
                     } else if (resp.result[i].type == 7) {
                         var type = "{{__('Label.City')}}";
+                    } else if (resp.result[i].type == 8) {
+                        var type = "{{__('Label.Video')}}";
                     }  else {
                         var type = "-";
                     }
@@ -783,6 +839,7 @@
                         $("#edit_screen_layout").val(resp.result.screen_layout).attr("selected", "selected");
                         $('#edit_artist_id').val(resp.result.artist_id).trigger('change');
                         $('#edit_category_id').val(resp.result.category_id).trigger('change');
+                        $('#edit_video_category_id').val(resp.result.category_id).trigger('change');
                         $('#edit_language_id').val(resp.result.language_id).trigger('change');
                         $('#edit_city_id').val(resp.result.city_id).trigger('change');
                         $("#edit_no_of_content").val(resp.result.no_of_content);
@@ -832,6 +889,7 @@
                     $(".edit_screen_layout").hide();
                     $(".edit_artist_drop").hide();
                     $(".edit_category_drop").hide();
+                    $(".edit_video_category_drop").hide();
                     $(".edit_language_drop").hide();
                     $(".edit_city_drop").hide();
                     $(".edit_no_of_content").hide();
@@ -881,7 +939,7 @@
                         $(".edit_is_premium").show();
                         $(".edit_order_by_upload").show();
                         $(".edit_order_by_play").show();
-                    } else if (resp.result.type == 3 || resp.result.type == 4 || resp.result.type == 5 || resp.result.type == 6 || resp.result.type == 7) {
+                    } else if (resp.result.type == 3 || resp.result.type == 4 || resp.result.type == 5 || resp.result.type == 6 || resp.result.type == 7 || resp.result.type == 8) {
 
                         $(".edit_screen_layout").show();
                         $("#edit_screen_layout option[value='landscape']").hide();
@@ -911,9 +969,13 @@
                         } else if(resp.result.type == 7){
                             $(".edit_order_by_upload").show();
                             $("#edit_screen_layout option[value='city']").show();
+                        } else if(resp.result.type == 8){
+                            $(".edit_video_category_drop").show();
+                            $(".edit_is_paid").show();
+                            $("#edit_screen_layout option[value='live_event']").show();
                         }
                     }
-                    
+
                     $('#edit_type').change(function() {
 
                         var type = $(this).val();
@@ -965,11 +1027,12 @@
                             $(".edit_order_by_upload").show();
                             $(".edit_order_by_play").show();
                             $(".edit_is_premium").show();
-                        } else if (type == 3 || type == 4 || type == 5 || type == 6 || type == 7){
+                        } else if (type == 3 || type == 4 || type == 5 || type == 6 || type == 7 || type == 8){
 
                             $(".edit_artist_drop").hide();
                             $(".edit_city_drop").hide();
                             $(".edit_category_drop").hide();
+                            $(".edit_video_category_drop").hide();
                             $(".edit_language_drop").hide();
                             $(".edit_order_by_upload").hide();
                             $(".edit_order_by_play").hide();
@@ -1044,13 +1107,26 @@
                                 $(".edit_no_of_content").show();
                                 $(".edit_view_all").show();
                                 $(".edit_order_by_upload").show();
-                                $(".edit_is_paid").hide();  
+                                $(".edit_is_paid").hide();
+                            } else if (type == 8) {
+
+                                $("#edit_screen_layout option[value='live_event']").show();
+                                $("#edit_screen_layout option[value='artist']").hide();
+                                $("#edit_screen_layout option[value='category']").hide();
+                                $("#edit_screen_layout option[value='language']").hide();
+                                $("#edit_screen_layout option[value='city']").hide();
+
+                                $(".edit_video_category_drop").show();
+                                $(".edit_no_of_content").show();
+                                $(".edit_view_all").show();
+                                $(".edit_is_paid").show();
                             }
                         } else {
 
                             $(".edit_screen_layout").hide();
                             $(".edit_artist_drop").hide();
                             $(".edit_category_drop").hide();
+                            $(".edit_video_category_drop").hide();
                             $(".edit_language_drop").hide();
                             $(".edit_city_drop").hide();
                             $(".edit_no_of_content").hide();
@@ -1077,6 +1153,9 @@
                 $("#dvloader").show();
                 var id = $('#edit_id').val();
                 var formData = new FormData($("#edit_content_section")[0]);
+                if ($('#edit_type').val() == 8) {
+                    formData.set('category_id', $('#edit_video_category_id').val());
+                }
 
                 var url = '{{ route("section.update", ":id") }}';
                 url = url.replace(':id', id);

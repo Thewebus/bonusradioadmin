@@ -112,6 +112,12 @@
                 <span>{{ __('Label.video_categories') }}</span>
             </a>
         </li>
+        <li class="side_line {{ request()->routeIs('videoseries*') ? 'active' : '' }}">
+            <a href="{{ route('videoseries.index') }}">
+                <i class="fa-solid fa-layer-group fa-2xl menu-icon"></i>
+                <span>{{ __('Label.video_series') }}</span>
+            </a>
+        </li>
         <p class="partition"><span>{{__('Label.interaction')}}</span></p>
         <li class="side_line {{ request()->routeIs('comment*') ? 'active' : '' }}">
             <a href="{{ route('comment.index') }}">

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\AdmobSettingController;
 use App\Http\Controllers\Admin\AdsPremiumController;
 use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\Admin\VideoCategoryController;
+use App\Http\Controllers\Admin\VideoSeriesController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\ArtistController;
 use App\Http\Controllers\Admin\SongController;
@@ -127,6 +128,7 @@ Route::group(['middleware' => 'installation'], function () {
         Route::resource('video', VideoController::class)->only(['index']);
         Route::post('video/saveChunk', [VideoController::class, 'saveChunk'])->name('video.savechunk');
         Route::resource('videocategory', VideoCategoryController::class)->only(['index']);
+        Route::resource('videoseries', VideoSeriesController::class)->only(['index']);
         // Comment
         Route::resource('comment', CommentController::class)->only(['index', 'show']);
         // Package
@@ -190,6 +192,7 @@ Route::group(['middleware' => 'installation'], function () {
             // Videos (video on demand)
             Route::resource('video', VideoController::class)->only(['store', 'update', 'destroy']);
             Route::resource('videocategory', VideoCategoryController::class)->only(['store', 'update', 'destroy']);
+            Route::resource('videoseries', VideoSeriesController::class)->only(['store', 'update', 'destroy']);
             // Package
             Route::resource('package', PackageController::class)->only(['store', 'update', 'destroy']);
             // Transaction

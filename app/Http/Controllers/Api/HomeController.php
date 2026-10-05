@@ -31,6 +31,7 @@ use App\Models\Social_Link;
 use App\Models\User;
 use App\Models\User_Notification_Tracking;
 use App\Models\Video_Category;
+use App\Models\Video_Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
@@ -47,6 +48,7 @@ class HomeController extends Controller
     private $folder_category = "category";
     private $folder_language = "language";
     private $folder_live_event = "live_event";
+    private $folder_video_series = "video_series";
     private $folder_notification = "notification";
     private $folder_user = "user";
     public $common;
@@ -1327,6 +1329,9 @@ class HomeController extends Controller
             $data = Live_Event::where('is_vod', 1)
                 ->where('status', 1)
                 ->where('date', '>=', date('Y-m-d'))
+                // Episodes only surface inside their series (get_video_series_detail) —
+                // listing them here too would show them floating without context.
+                ->whereNull('video_series_id')
                 ->orderBy('id', 'DESC');
 
             if (!empty($request->category_id)) {
@@ -1374,6 +1379,107 @@ class HomeController extends Controller
             } else {
                 return $this->common->API_Response(400, __('api_msg.data_not_found'));
             }
+        } catch (Exception $e) {
+            return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
+        }
+    }
+    // Video series — a header (title/image) whose episodes are ordinary tbl_live_event
+    // rows (video_series_id set). Optional params: category_id, search.
+    public function get_video_series(Request $request)
+    {
+        try {
+
+            $data = Video_Series::where('status', 1)->orderBy('id', 'DESC');
+
+            if (!empty($request->category_id)) {
+                $data->where('category_id', $request->category_id);
+            }
+            if (!empty($request->search)) {
+                $data->where('title', 'like', '%' . $request->search . '%');
+            }
+
+            $data = $data->get();
+
+            if (count($data) > 0) {
+
+                $this->common->imageNameToUrl($data, 'portrait_img', $this->folder_video_series);
+                $this->common->imageNameToUrl($data, 'landscape_img', $this->folder_video_series);
+
+                $category_names = Video_Category::pluck('name', 'id');
+                $episode_counts = Live_Event::where('is_vod', 1)
+                    ->whereNotNull('video_series_id')
+                    ->where('status', 1)
+                    ->selectRaw('video_series_id, count(*) as total')
+                    ->groupBy('video_series_id')
+                    ->pluck('total', 'video_series_id');
+
+                for ($i = 0; $i < count($data); $i++) {
+                    $data[$i]['category_name'] = $category_names[$data[$i]['category_id']] ?? '';
+                    $data[$i]['episode_count'] = $episode_counts[$data[$i]['id']] ?? 0;
+                }
+
+                return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data);
+            } else {
+                return $this->common->API_Response(400, __('api_msg.data_not_found'));
+            }
+        } catch (Exception $e) {
+            return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
+        }
+    }
+    // One series' header plus its episodes, ordered by episode_number. Episodes come back
+    // in the exact same shape as get_video's rows, so the app reuses the same video model.
+    public function get_video_series_detail(Request $request)
+    {
+        try {
+
+            $validation = Validator::make(
+                $request->all(),
+                ['series_id' => 'required|numeric'],
+                ['series_id.required' => __('api_msg.section_id_is_required')]
+            );
+            if ($validation->fails()) {
+                return $this->common->API_Response(400, $validation->errors()->first());
+            }
+
+            $user_id = isset($request->user_id) ? $request->user_id : 0;
+
+            $series = Video_Series::where('id', $request->series_id)->where('status', 1)->first();
+            if (!isset($series)) {
+                return $this->common->API_Response(400, __('api_msg.data_not_found'));
+            }
+
+            $this->common->imageNameToUrl([$series], 'portrait_img', $this->folder_video_series);
+            $this->common->imageNameToUrl([$series], 'landscape_img', $this->folder_video_series);
+            $series['category_name'] = Video_Category::where('id', $series['category_id'])->value('name') ?? '';
+
+            $episodes = Live_Event::where('is_vod', 1)
+                ->where('status', 1)
+                ->where('video_series_id', $series->id)
+                ->orderBy('episode_number', 'ASC')
+                ->orderBy('id', 'ASC')
+                ->get();
+
+            $this->common->imageNameToUrl($episodes, 'portrait_img', $this->folder_live_event);
+            $this->common->imageNameToUrl($episodes, 'landscape_img', $this->folder_live_event);
+
+            $category_names = Video_Category::pluck('name', 'id');
+            for ($i = 0; $i < count($episodes); $i++) {
+                if ($episodes[$i]['video_source'] == 2) {
+                    $episodes[$i]['link'] = config('app.image_url') . 'video/' . $episodes[$i]['link'];
+                }
+                $episodes[$i]['category_name'] = $category_names[$episodes[$i]['category_id']] ?? '';
+
+                $episodes[$i]['is_join'] = 0;
+                $check = Event_Join_User::where('user_id', $user_id)->where('live_event_id', $episodes[$i]['id'])->where('status', 1)->first();
+                if (isset($check) && $check != null) {
+                    $episodes[$i]['is_join'] = 1;
+                }
+            }
+
+            $data = $series->toArray();
+            $data['episodes'] = $episodes;
+
+            return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data);
         } catch (Exception $e) {
             return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
         }
@@ -1540,7 +1646,7 @@ class HomeController extends Controller
                         $this->common->imageNameToUrl($data[$i]['data'], 'image', $this->folder_city);
                     } else if ($data[$i]['type'] == 8) {
 
-                        $content = Live_Event::where('is_vod', 1)->where('status', 1)->where('category_id', $data[$i]['category_id']);
+                        $content = Live_Event::where('is_vod', 1)->where('status', 1)->where('category_id', $data[$i]['category_id'])->whereNull('video_series_id');
 
                         if ($data[$i]['order_by_upload'] == 1) {
                             $content->orderBy('id', 'desc');
@@ -1658,7 +1764,7 @@ class HomeController extends Controller
                     $data = $content;
                 } else if ($section['type'] == 8) {
 
-                    $content = Live_Event::where('is_vod', 1)->where('status', 1)->where('category_id', $section['category_id']);
+                    $content = Live_Event::where('is_vod', 1)->where('status', 1)->where('category_id', $section['category_id'])->whereNull('video_series_id');
 
                     if ($section['order_by_upload'] == 1) {
                         $content->orderBy('id', 'desc');

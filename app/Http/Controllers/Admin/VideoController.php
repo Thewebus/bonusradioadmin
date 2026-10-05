@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Common;
 use App\Models\Live_Event;
 use App\Models\Video_Category;
+use App\Models\Video_Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -34,6 +35,10 @@ class VideoController extends Controller
         try {
             $params['data'] = [];
             $params['categories'] = Video_Category::where('status', 1)->orderBy('name')->get();
+            $params['series'] = Video_Series::where('status', 1)->orderBy('title')->get();
+            // Present when arriving from a series row's "Episodes" link — pre-filters
+            // the table and pre-selects that series in the add form.
+            $params['series_id'] = $request->series_id;
 
             if ($request->ajax()) {
                 $input_search = $request['input_search'];
@@ -42,9 +47,13 @@ class VideoController extends Controller
                 if ($input_search != null && isset($input_search)) {
                     $data->where('title', 'LIKE', "%{$input_search}%");
                 }
+                if (!empty($request->series_id)) {
+                    $data->where('video_series_id', $request->series_id);
+                }
                 $data = $data->get();
 
                 $category_names = Video_Category::pluck('name', 'id');
+                $series_titles = Video_Series::pluck('title', 'id');
 
                 $this->common->imageNameToUrl($data, 'portrait_img', $this->folder);
                 $this->common->imageNameToUrl($data, 'landscape_img', $this->folder);
@@ -53,6 +62,13 @@ class VideoController extends Controller
                     ->addIndexColumn()
                     ->addColumn('category', function ($row) use ($category_names) {
                         return e($category_names[$row->category_id] ?? '-');
+                    })
+                    ->addColumn('series', function ($row) use ($series_titles) {
+                        if (empty($row->video_series_id)) {
+                            return '-';
+                        }
+                        $title = $series_titles[$row->video_series_id] ?? '-';
+                        return e($title) . ($row->episode_number ? ' #' . $row->episode_number : '');
                     })
                     ->addColumn('available_until', function ($row) {
                         return $row->date >= $this->no_expiry_date ? 'Unlimited' : e($row->date);
@@ -82,6 +98,8 @@ class VideoController extends Controller
                             . ' data-description="' . e($row->description) . '"'
                             . ' data-category_id="' . $row->category_id . '"'
                             . ' data-video_source="' . $row->video_source . '"'
+                            . ' data-video_series_id="' . $row->video_series_id . '"'
+                            . ' data-episode_number="' . $row->episode_number . '"'
                             . ' data-link="' . e($row->link) . '"'
                             . ' data-date="' . e($until) . '"'
                             . ' data-is_paid="' . $row->is_paid . '"'
@@ -261,6 +279,8 @@ class VideoController extends Controller
             'title' => 'required|min:2|max:255',
             'category_id' => 'required|exists:tbl_video_category,id',
             'video_source' => 'required|in:1,2',
+            'video_series_id' => 'nullable|exists:tbl_video_series,id',
+            'episode_number' => 'nullable|integer|min:1',
             'is_paid' => 'required|in:0,1',
             'status' => 'required|in:0,1',
             'date' => 'nullable|date',
@@ -287,6 +307,8 @@ class VideoController extends Controller
             'is_vod' => 1,
             'type' => 2,
             'video_source' => $request->video_source,
+            'video_series_id' => $request->video_series_id ?: null,
+            'episode_number' => $request->video_series_id ? ($request->episode_number ?: null) : null,
             'link' => $request->video_source == 2 ? $request->video_file : $request->link,
             'is_paid' => $request->is_paid,
             'price' => $request->is_paid == 1 ? $request->price : 0,

@@ -105,6 +105,23 @@
                                 </div>
                             </div>
                             <div class="form-row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>{{__('Label.series')}}</label>
+                                        <select name="video_series_id" id="video_series_id" class="form-control series_select" data-prefix="">
+                                            <option value="">{{__('Label.no_series')}}</option>
+                                            @foreach ($series as $one_series)
+                                                <option value="{{ $one_series->id }}" @selected((string) $series_id === (string) $one_series->id)>{{ $one_series->title }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2" id="episode_number_box" style="display:none;">
+                                    <div class="form-group">
+                                        <label>{{__('Label.episode_number')}}</label>
+                                        <input type="number" name="episode_number" id="episode_number" class="form-control" placeholder="1" min="1">
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>{{__('Label.available_until')}}</label>
@@ -180,6 +197,7 @@
                                 <th>{{__('Label.Image')}}</th>
                                 <th>{{__('Label.Title')}}</th>
                                 <th>{{__('Label.Category')}}</th>
+                                <th>{{__('Label.series')}}</th>
                                 <th>{{__('Label.available_until')}}</th>
                                 <th>Paid</th>
                                 <th>Price</th>
@@ -285,6 +303,23 @@
                                         </div>
                                     </div>
                                     <div class="form-row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>{{__('Label.series')}}</label>
+                                                <select name="video_series_id" id="edit_video_series_id" class="form-control series_select" data-prefix="edit_">
+                                                    <option value="">{{__('Label.no_series')}}</option>
+                                                    @foreach ($series as $one_series)
+                                                        <option value="{{ $one_series->id }}">{{ $one_series->title }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" id="edit_episode_number_box" style="display:none;">
+                                            <div class="form-group">
+                                                <label>{{__('Label.episode_number')}}</label>
+                                                <input type="number" name="episode_number" id="edit_episode_number" class="form-control" placeholder="1" min="1">
+                                            </div>
+                                        </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>{{__('Label.available_until')}}</label>
@@ -349,6 +384,13 @@
 
 @section('pagescript')
     <script>
+        // Present when arriving from a series row's "Episodes" link (video.index?series_id=X) —
+        // filters the table to that series' episodes and carries the context through saves.
+        var seriesIdFilter = new URLSearchParams(window.location.search).get('series_id') || '';
+        function videoIndexUrl() {
+            return '{{ route("video.index") }}' + (seriesIdFilter ? '?series_id=' + seriesIdFilter : '');
+        }
+
         // ---- paid <-> price, link <-> upload toggles (add form prefix "", edit modal prefix "edit_")
         function togglePrice(prefix) {
             var paid = $('input[name=is_paid]:checked', prefix === '' ? '#video' : '#update_video').val();
@@ -363,6 +405,12 @@
             $('#' + prefix + 'upload_box').toggle(isUpload);
         }
         $(document).on('change', '.video_source_select', function() { toggleSource($(this).data('prefix')); });
+
+        // ---- series <-> episode number toggle (add form prefix "", edit modal prefix "edit_")
+        function toggleSeries(prefix) {
+            $('#' + prefix + 'episode_number_box').toggle($('#' + prefix + 'video_series_id').val() != '');
+        }
+        $(document).on('change', '.series_select', function() { toggleSeries($(this).data('prefix')); });
 
         // ---- chunked video upload (authenticated route, 1 MB chunks)
         function initVideoUploader(prefix) {
@@ -420,6 +468,8 @@
         var editUploader = initVideoUploader('edit_');
         // plupload mis-positions its hidden <input> for buttons inside a closed modal
         $('#EditModel').on('shown.bs.modal', function() { editUploader.refresh(); });
+        // Shows the episode # field when the add form arrives pre-selected with a series.
+        toggleSeries('');
 
         $(document).ready(function() {
             var table = $('#datatable').DataTable({
@@ -443,6 +493,7 @@
                     url: "{{ route('video.index') }}",
                     data: function(d) {
                         d.input_search = $('#input_search').val();
+                        d.series_id = seriesIdFilter;
                     },
                 },
                 columns: [{
@@ -466,6 +517,7 @@
                         }
                     },
                     { data: 'category', name: 'category', orderable: false, searchable: false },
+                    { data: 'series', name: 'series', orderable: false, searchable: false },
                     { data: 'available_until', name: 'available_until', orderable: false, searchable: false },
                     {
                         data: 'is_paid',
@@ -544,7 +596,7 @@
                     processData: false,
                     success: function(resp) {
                         $("#dvloader").hide();
-                        get_responce_message(resp, 'video', '{{ route("video.index") }}');
+                        get_responce_message(resp, 'video', videoIndexUrl());
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                         $("#dvloader").hide();
@@ -569,6 +621,10 @@
             $("#edit_status").val($(this).data('status'));
             $("#imagePreviewModel").attr("src", $(this).data('portrait_img'));
             $("#imagePreviewLandscapeModel").attr("src", $(this).data('landscape_img'));
+
+            $("#edit_video_series_id").val($(this).data('video_series_id') || '');
+            $("#edit_episode_number").val($(this).data('episode_number') || '');
+            toggleSeries('edit_');
 
             $("#edit_video_source").val(source);
             if (source == 2) {
@@ -612,7 +668,7 @@
                     success: function(resp) {
                         $("#dvloader").hide();
                         $('#EditModel').modal('toggle');
-                        get_responce_message(resp, 'update_video', '{{ route("video.index") }}');
+                        get_responce_message(resp, 'update_video', videoIndexUrl());
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                         $("#dvloader").hide();

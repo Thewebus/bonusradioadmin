@@ -26,8 +26,15 @@ class Live_Event extends Model
         'is_vod' => 'integer',
         'category_id' => 'integer',
         'video_source' => 'integer',
+        'video_series_id' => 'integer',
+        'episode_number' => 'integer',
         'link' => 'string',
         'description' => 'string',
         'status' => 'integer',
     ];
+
+    public function series()
+    {
+        return $this->belongsTo(Video_Series::class, 'video_series_id');
+    }
 }

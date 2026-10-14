@@ -108,6 +108,10 @@ class SectionController extends Controller
             }
             
             $requestData = $request->all();
+            // Only a client-side staging field for the video-category picker
+            // (see section/index.blade.php) — its value is already copied
+            // into category_id below; tbl_section has no such column.
+            unset($requestData['video_category_id']);
             $requestData['sortable'] = 1;
             $requestData['status'] = 1;
 
@@ -277,6 +281,10 @@ class SectionController extends Controller
             }
             
             $requestData = $request->all();
+            // Only a client-side staging field for the video-category picker
+            // (see section/index.blade.php) — its value is already copied
+            // into category_id below; tbl_section has no such column.
+            unset($requestData['video_category_id']);
             $requestData['sortable'] = 1;
             $requestData['status'] = 1;
 

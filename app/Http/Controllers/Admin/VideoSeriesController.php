@@ -98,6 +98,7 @@ class VideoSeriesController extends Controller
             }
 
             $row = $request->only(['title', 'description', 'category_id', 'status']);
+            $row['category_id'] = $row['category_id'] ?: null;
             $row['portrait_img'] = $this->common->saveImage($request->file('portrait_img'), $this->folder, "video_series_");
             $row['landscape_img'] = $this->common->saveImage($request->file('landscape_img'), $this->folder, "video_series_");
 
@@ -127,6 +128,7 @@ class VideoSeriesController extends Controller
             }
 
             $row = $request->only(['title', 'description', 'category_id', 'status']);
+            $row['category_id'] = $row['category_id'] ?: null;
 
             if ($request->hasFile('portrait_img')) {
                 $row['portrait_img'] = $this->common->saveImage($request->file('portrait_img'), $this->folder, "video_series_");

@@ -1530,6 +1530,16 @@ class HomeController extends Controller
 
                         $data[$i]['data'] = $content->take($data[$i]['no_of_content'])->get();
                         $this->common->imageNameToUrl($data[$i]['data'], 'image', $this->folder_category);
+
+                        $category_ids = $data[$i]['data']->pluck('id');
+                        $song_counts = Song::whereIn('category_id', $category_ids)
+                            ->where('status', 1)
+                            ->selectRaw('category_id, count(*) as total')
+                            ->groupBy('category_id')
+                            ->pluck('total', 'category_id');
+                        foreach ($data[$i]['data'] as $category) {
+                            $category['song_count'] = $song_counts[$category['id']] ?? 0;
+                        }
                     } else if ($data[$i]['type'] == 6) {
 
                         $content = Language::where('status', 1);

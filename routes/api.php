@@ -49,6 +49,7 @@ Route::group(['middleware' => 'apipurchasecode'], function () {
     Route::post('get_video_category', [HomeController::class, 'get_video_category']);
     Route::post('get_video_series', [HomeController::class, 'get_video_series']);
     Route::post('get_video_series_detail', [HomeController::class, 'get_video_series_detail']);
+    Route::post('add_video_view', [HomeController::class, 'add_video_view']);
     Route::post('search_content', [HomeController::class, 'search_content']);
     Route::post('get_section_list', [HomeController::class, 'get_section_list']);
     Route::post('get_section_detail', [HomeController::class, 'get_section_detail']);

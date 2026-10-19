@@ -991,8 +991,6 @@ class HomeController extends Controller
                 $data = Song::where('name', 'like', '%' . $name . '%')->where('status', 1)->orderBy('id', "DESC");
             } else if ($type == 2) {
                 $data = Podcast::where('title', 'like', '%' . $name . '%')->where('status', 1)->orderBy('id', "DESC");
-            } else if ($type == 3) {
-                $data = Live_Event::where('is_vod', 0)->where('title', 'like', '%' . $name . '%')->where('status', 1)->orderBy('id', "DESC");
             }
 
             $total_rows = $data->count();
@@ -1028,17 +1026,6 @@ class HomeController extends Controller
                         $value['is_favorite'] = $this->common->isFavorite(2, $value->id, $user_id);
                         $value['is_buy'] = $this->common->is_any_package_buy($user_id);
                         $this->common->get_all_count_for_content(1, $value);
-                    }
-                } else if ($type == 3) {
-
-                    $this->common->imageNameToUrl($data, 'portrait_img', $this->folder_live_event);
-                    $this->common->imageNameToUrl($data, 'landscape_img', $this->folder_live_event);
-                    for ($i = 0; $i < count($data); $i++) {
-                        $data[$i]['is_join'] = 0;
-                        $check = Event_Join_User::where('user_id', $user_id)->where('live_event_id', $data[$i]['id'])->where('status', 1)->first();
-                        if (isset($check) && $check != null) {
-                            $data[$i]['is_join'] = 1;
-                        }
                     }
                 }
                 return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data, $pagination);
@@ -1184,51 +1171,6 @@ class HomeController extends Controller
                     }
                     $data[$i]['podcast_title'] = $this->common->GetPodcastNameByIds($data[$i]['podcasts_id']);
                     $data[$i]['total_comment'] = Comment::where('type', 2)->where('content_id', $podcast_id)->where('episode_id', $data[$i]['id'])->where('status', 1)->count();
-                }
-
-                return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data, $pagination);
-            } else {
-                return $this->common->API_Response(400, __('api_msg.data_not_found'));
-            }
-        } catch (Exception $e) {
-            return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
-        }
-    }
-    public function get_live_event(Request $request)
-    {
-        try {
-
-            $user_id = isset($request->user_id) ? $request->user_id : 0;
-
-            $page_size = 0;
-            $current_page = 0;
-            $more_page = false;
-
-            $data = Live_Event::where('is_vod', 0)->where('status', 1)->orderBy('id', 'DESC');
-
-            $total_rows = $data->count();
-            $total_page = $this->page_limit;
-            $page_size = ceil($total_rows / $total_page);
-            $current_page = $request->page_no ?? 1;
-            $offset = $current_page * $total_page - $total_page;
-
-            $more_page = $this->common->more_page($current_page, $page_size);
-            $pagination = $this->common->pagination_array($total_rows, $page_size, $current_page, $more_page);
-
-            $data->take($total_page)->offset($offset);
-            $data = $data->get();
-
-            if (count($data) > 0) {
-
-                $this->common->imageNameToUrl($data, 'portrait_img', $this->folder_live_event);
-                $this->common->imageNameToUrl($data, 'landscape_img', $this->folder_live_event);
-
-                for ($i = 0; $i < count($data); $i++) {
-                    $data[$i]['is_join'] = 0;
-                    $check = Event_Join_User::where('user_id', $user_id)->where('live_event_id', $data[$i]['id'])->where('status', 1)->first();
-                    if (isset($check) && $check != null) {
-                        $data[$i]['is_join'] = 1;
-                    }
                 }
 
                 return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data, $pagination);
@@ -1533,11 +1475,9 @@ class HomeController extends Controller
             return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
         }
     }
-    public function get_section_list(Request $request) // type = 1-Song, 2-Podcat, 3-Live Event, 4-Artist, 5-Category, 6-Language, 7-City
+    public function get_section_list(Request $request) // type = 1-Song, 2-Podcat, 4-Artist, 5-Category, 6-Language, 7-City, 8-Video
     {
         try {
-            $this->common->update_liveevent_status();
-
             $page_size = 0;
             $current_page = 0;
             $more_page = false;
@@ -1565,36 +1505,6 @@ class HomeController extends Controller
                     if ($data[$i]['type'] == 1 || $data[$i]['type'] == 2) {
 
                         $query = $this->common->section_query($user_id, $data[$i]['type'], $data[$i]['artist_id'], $data[$i]['category_id'], $data[$i]['language_id'], $data[$i]['city_id'], $data[$i]['order_by_upload'], $data[$i]['order_by_play'], $data[$i]['is_premium'], $data[$i]['no_of_content']);
-
-                        $data[$i]['data'] = $query;
-                    } else if ($data[$i]['type'] == 3) {
-
-                        $content = Live_Event::where('is_vod', 0)->where('status', 1);
-
-                        if ($data[$i]['order_by_upload'] == 1) {
-                            $content->orderBy('id', 'desc');
-                        } else {
-                            $content->orderBy('id', 'asc');
-                        }
-
-                        if ($data[$i]['is_paid'] == 0) {
-                            $content->where('is_paid', 0);
-                        } else if ($data[$i]['is_paid'] == 1) {
-                            $content->where('is_paid', 1);
-                        }
-                        $query = $content->take($data[$i]['no_of_content'])->get();
-
-                        $this->common->imageNameToUrl($query, 'portrait_img', $this->folder_live_event);
-                        $this->common->imageNameToUrl($query, 'landscape_img', $this->folder_live_event);
-
-                        for ($j = 0; $j < count($query); $j++) {
-                            $query[$j]['is_join'] = 0;
-                            $check = Event_Join_User::where('user_id', $user_id)->where('live_event_id', $query[$j]['id'])->where('status', 1)->first();
-                            if (isset($check) && $check != null) {
-
-                                $query[$j]['is_join'] = 1;
-                            }
-                        }
 
                         $data[$i]['data'] = $query;
                     } else if ($data[$i]['type'] == 4) {
@@ -1722,23 +1632,6 @@ class HomeController extends Controller
                 if ($section['type'] == 1 || $section['type'] == 2) {
                     $content = $this->common->section_query_detail($section['type'], $section['artist_id'], $section['category_id'], $section['language_id'], $section['city_id'], $section['order_by_upload'], $section['order_by_play'], $section['is_premium']);
                     $data = $content;
-                } else if ($section['type'] == 3) {
-
-                    $content = Live_Event::where('is_vod', 0)->where('status', 1);
-
-                    if ($section['order_by_upload'] == 1) {
-                        $content->orderBy('id', 'desc');
-                    } else {
-                        $content->orderBy('id', 'asc');
-                    }
-
-                    if ($section['is_paid'] == 0) {
-                        $content->where('is_paid', 0);
-                    } else if ($section['is_paid'] == 1) {
-                        $content->where('is_paid', 1);
-                    }
-
-                    $data = $content;
                 } else if ($section['type'] == 4 || $section['type'] == 5 || $section['type'] == 6 || $section['type'] == 7) {
 
                     if ($section['type'] == 4) {
@@ -1816,16 +1709,6 @@ class HomeController extends Controller
                         $data[$i]['is_favorite'] = $this->common->isFavorite(2, $data[$i]['id'], $user_id);
                         $this->common->get_all_count_for_content(2, $data[$i]);
                         $this->common->getAllIdByName(array($data[$i]));
-                    } else if ($section['type'] == 3) {
-
-                        $data[$i]['portrait_img'] = $this->common->Get_Image($this->folder_live_event, $data[$i]['portrait_img']);
-                        $data[$i]['landscape_img'] = $this->common->Get_Image($this->folder_live_event, $data[$i]['landscape_img']);
-
-                        $data[$i]['is_join'] = 0;
-                        $check = Event_Join_User::where('user_id', $user_id)->where('live_event_id', $data[$i]['id'])->where('status', 1)->first();
-                        if (isset($check) && $check != null) {
-                            $data[$i]['is_join'] = 1;
-                        }
                     } else if ($section['type'] == 4) {
 
                         $data[$i]['image'] = $this->common->Get_Image($this->folder_artist, $data[$i]['image']);
@@ -2350,11 +2233,9 @@ class HomeController extends Controller
             return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
         }
     }
-    public function get_podcast_section_list(Request $request) // type = 1-Song, 2-Podcat, 3-Live Event, 4-Artist, 5-Category, 6-Language, 7-City
+    public function get_podcast_section_list(Request $request)
     {
         try {
-            $this->common->update_liveevent_status();
-
             $page_size = 0;
             $current_page = 0;
             $more_page = false;

@@ -88,12 +88,6 @@
                 <span>{{__('Label.poadcast')}}</span>
             </a>
         </li>
-        <li class="side_line {{ request()->routeIs('liveevent*') ? 'active' : '' }}">
-            <a href="{{ route('liveevent.index') }}">
-                <i class="fa-solid fa-calendar-week fa-2xl menu-icon"></i>
-                <span>Live Event</span>
-            </a>
-        </li>
         <li class="side_line {{ request()->routeIs('adspremium*') ? 'active' : '' }}">
             <a href="{{ route('adspremium.index') }}">
                 <i class="fa-solid fa-image fa-2xl menu-icon"></i>

@@ -92,6 +92,7 @@ class VideoController extends Controller
                         $until = $row->date >= $this->no_expiry_date ? '' : $row->date;
 
                         $btn = '<div class="d-flex justify-content-around" title="Edit">';
+                        $btn .= '<a href="' . route('liveevent.user.index', $row->id) . '" class="btn text-white p-1 font-weight-bold" style="background:#4e45b8;" title="Join User">Join User</a> ';
                         $btn .= '<a class="edit-delete-btn edit_video" title="Edit" data-toggle="modal" href="#EditModel"'
                             . ' data-id="' . $row->id . '"'
                             . ' data-title="' . e($row->title) . '"'

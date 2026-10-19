@@ -50,7 +50,6 @@
                                         <option value="">{{__('Label.select_type')}}</option>
                                         <option value="1">{{__('Label.radio_station')}}</option>
                                         <option value="2">{{__('Label.poadcast')}}</option>
-                                        <option value="3">{{__('Label.live_event')}}</option>
                                         <option value="4">{{__('Label.Artist')}}</option>
                                         <option value="5">{{__('Label.Category')}}</option>
                                         <option value="6">{{__('Label.Language')}}</option>
@@ -263,7 +262,6 @@
                                             <select name="type" class="form-control" id="edit_type">
                                             <option value="1">{{__('Label.radio_station')}}</option>
                                             <option value="2">{{__('Label.poadcast')}}</option>
-                                            <option value="3">{{__('Label.live_event')}}</option>
                                             <option value="4">{{__('Label.Artist')}}</option>
                                             <option value="5">{{__('Label.Category')}}</option>
                                             <option value="6">{{__('Label.Language')}}</option>
@@ -568,7 +566,7 @@
                     $(".order_by_upload").show();
                     $(".order_by_play").show();
                     $(".is_premium").show();
-                } else if (optionValue == 3 || optionValue == 4 || optionValue == 5 || optionValue == 6 || optionValue == 7 || optionValue == 8){
+                } else if (optionValue == 4 || optionValue == 5 || optionValue == 6 || optionValue == 7 || optionValue == 8){
 
                     $(".artist_drop").hide();
                     $(".city_drop").hide();
@@ -585,18 +583,7 @@
                     $("#screen_layout option[value='portrait']").hide();
                     $("#screen_layout option[value='sqaure']").hide();
 
-                    if(optionValue == 3){
-
-                        $("#screen_layout option[value='live_event']").show();
-                        $("#screen_layout option[value='artist']").hide();
-                        $("#screen_layout option[value='category']").hide();
-                        $("#screen_layout option[value='language']").hide();
-                        $("#screen_layout option[value='city']").hide();
-
-                        $(".no_of_content").show();
-                        $(".view_all").show();
-                        $(".is_paid").show();  
-                    } else if (optionValue == 4){
+                    if (optionValue == 4){
 
                         $("#screen_layout option[value='live_event']").hide();
                         $("#screen_layout option[value='artist']").show();
@@ -728,8 +715,6 @@
                         var type = "{{__('Label.radio_station')}}";
                     } else if (resp.result[i].type == 2) {
                         var type = "{{__('Label.poadcast')}}";
-                    } else if (resp.result[i].type == 3) {
-                        var type = "{{__('Label.live_event')}}";
                     } else if (resp.result[i].type == 4) {
                         var type = "{{__('Label.Artist')}}";
                     } else if (resp.result[i].type == 5) {
@@ -939,7 +924,7 @@
                         $(".edit_is_premium").show();
                         $(".edit_order_by_upload").show();
                         $(".edit_order_by_play").show();
-                    } else if (resp.result.type == 3 || resp.result.type == 4 || resp.result.type == 5 || resp.result.type == 6 || resp.result.type == 7 || resp.result.type == 8) {
+                    } else if (resp.result.type == 4 || resp.result.type == 5 || resp.result.type == 6 || resp.result.type == 7 || resp.result.type == 8) {
 
                         $(".edit_screen_layout").show();
                         $("#edit_screen_layout option[value='landscape']").hide();
@@ -953,11 +938,7 @@
 
                         $(".edit_no_of_content").show();
                         $(".edit_view_all").show();
-                        if(resp.result.type == 3){
-                            $(".edit_is_paid").show();
-                            $("#edit_screen_layout option[value='live_event']").show();
-
-                        } else if(resp.result.type == 4){
+                        if(resp.result.type == 4){
                             $(".edit_order_by_upload").show();
                             $("#edit_screen_layout option[value='artist']").show();
                         } else if(resp.result.type == 5){
@@ -1027,7 +1008,7 @@
                             $(".edit_order_by_upload").show();
                             $(".edit_order_by_play").show();
                             $(".edit_is_premium").show();
-                        } else if (type == 3 || type == 4 || type == 5 || type == 6 || type == 7 || type == 8){
+                        } else if (type == 4 || type == 5 || type == 6 || type == 7 || type == 8){
 
                             $(".edit_artist_drop").hide();
                             $(".edit_city_drop").hide();
@@ -1049,18 +1030,7 @@
                             $("#edit_screen_layout option[value='language']").hide();
                             $("#edit_screen_layout option[value='city']").hide();
 
-                            if(type == 3) {
-
-                                $("#edit_screen_layout option[value='live_event']").show();
-                                $("#edit_screen_layout option[value='artist']").hide();
-                                $("#edit_screen_layout option[value='category']").hide();
-                                $("#edit_screen_layout option[value='language']").hide();
-                                $("#edit_screen_layout option[value='city']").hide();
-
-                                $(".edit_no_of_content").show();
-                                $(".edit_view_all").show();
-                                $(".edit_is_paid").show();  
-                            } else if (type == 4) {
+                            if (type == 4) {
 
                                 $("#edit_screen_layout option[value='live_event']").hide();
                                 $("#edit_screen_layout option[value='artist']").show();

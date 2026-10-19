@@ -163,12 +163,12 @@
                                 <i class="fa-solid fa-ellipsis-vertical fa-xl text-dark dot-icon mr-2"></i>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item color9-viewall" href="{{ route('liveevent.index') }}">{{__('Label.View_All')}}</a>
+                                <a class="dropdown-item color9-viewall" href="{{ route('video.index') }}">{{__('Label.View_All')}}</a>
                             </div>
                         </div>
                         <h2 class="counter">
-                            <p class="p-0 m-0 counting" data-count="{{No_Format($LiveEventCount ?? 00)}}">{{No_Format($LiveEventCount?? 00)}}</p>
-                            <span>Live Event</span>
+                            <p class="p-0 m-0 counting" data-count="{{No_Format($VideoCount ?? 00)}}">{{No_Format($VideoCount?? 00)}}</p>
+                            <span>{{__('Label.videos_vod')}}</span>
                         </h2>
                     </div>
                 </div>

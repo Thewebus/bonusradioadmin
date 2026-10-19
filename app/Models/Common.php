@@ -263,21 +263,6 @@ class Common extends Model
         }
         return true;
     }
-    public function update_liveevent_status()
-    {
-        $all_data = Live_Event::where('is_vod', 0)->get();
-        for ($i = 0; $i < count($all_data); $i++) {
-
-            if ($all_data[$i]['date'] < date("Y-m-d")) {
-                $all_data[$i]->status = 0;
-                $all_data[$i]->save();
-            } else {
-                $all_data[$i]->status = 1;
-                $all_data[$i]->save();
-            }
-        }
-        return true;
-    }
     public function is_any_package_buy($user_id)
     {
         $this->package_expiry();

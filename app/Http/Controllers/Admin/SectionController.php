@@ -83,16 +83,14 @@ class SectionController extends Controller
                 }
             }
 
-            if ($request['type'] == 3 || $request['type'] == 4 || $request['type'] == 5 || $request['type'] == 6 || $request['type'] == 7 || $request['type'] == 8) {
+            if ($request['type'] == 4 || $request['type'] == 5 || $request['type'] == 6 || $request['type'] == 7 || $request['type'] == 8) {
                 $rules = [
                     'screen_layout' => 'required',
                     'no_of_content' => 'required|integer|gt:0',
                     'view_all' => 'required',
                 ];
 
-                if ($request['type'] == 3) {
-                    $rules['is_paid'] = 'required';
-                } elseif ($request['type'] == 8) {
+                if ($request['type'] == 8) {
                     $rules['category_id'] = 'required';
                     $rules['is_paid'] = 'required';
                 } else {
@@ -149,14 +147,12 @@ class SectionController extends Controller
                 $requestData['order_by_upload'] = isset($request['order_by_upload']) ? $request['order_by_upload'] : 1;
                 $requestData['order_by_play'] = isset($request['order_by_play']) ? $request['order_by_play'] : 1;
 
-            } elseif ($requestData['type'] == 3 || $requestData['type'] == 4 || $requestData['type'] == 5 || $requestData['type'] == 6 || $requestData['type'] == 7 || $requestData['type'] == 8) {
+            } elseif ($requestData['type'] == 4 || $requestData['type'] == 5 || $requestData['type'] == 6 || $requestData['type'] == 7 || $requestData['type'] == 8) {
 
                 $requestData['no_of_content'] = isset($request['no_of_content'])  ? $request['no_of_content'] : 1;
                 $requestData['view_all'] = isset($request['view_all'])  ? $request['view_all'] : 0;
 
-                if($requestData['type'] == 3){
-                    $requestData['is_paid'] = isset($request['is_paid']) ? $request['is_paid'] : 0;
-                } elseif($requestData['type'] == 8){
+                if($requestData['type'] == 8){
                     $requestData['category_id'] = isset($request['category_id']) ? $request['category_id'] : 0;
                     $requestData['is_paid'] = isset($request['is_paid']) ? $request['is_paid'] : 0;
                 } else{
@@ -256,16 +252,14 @@ class SectionController extends Controller
                 }
             }
 
-            if ($request['type'] == 3 || $request['type'] == 4 || $request['type'] == 5 || $request['type'] == 6 || $request['type'] == 7 || $request['type'] == 8) {
+            if ($request['type'] == 4 || $request['type'] == 5 || $request['type'] == 6 || $request['type'] == 7 || $request['type'] == 8) {
                 $rules = [
                     'screen_layout' => 'required',
                     'no_of_content' => 'required|integer|gt:0',
                     'view_all' => 'required',
                 ];
 
-                if ($request['type'] == 3) {
-                    $rules['is_paid'] = 'required';
-                } elseif ($request['type'] == 8) {
+                if ($request['type'] == 8) {
                     $rules['category_id'] = 'required';
                     $rules['is_paid'] = 'required';
                 } else {
@@ -322,14 +316,12 @@ class SectionController extends Controller
                 $requestData['order_by_upload'] = isset($request['order_by_upload']) ? $request['order_by_upload'] : 1;
                 $requestData['order_by_play'] = isset($request['order_by_play']) ? $request['order_by_play'] : 1;
 
-            } elseif ($requestData['type'] == 3 || $requestData['type'] == 4 || $requestData['type'] == 5 || $requestData['type'] == 6 || $requestData['type'] == 7 || $requestData['type'] == 8) {
+            } elseif ($requestData['type'] == 4 || $requestData['type'] == 5 || $requestData['type'] == 6 || $requestData['type'] == 7 || $requestData['type'] == 8) {
 
                 $requestData['no_of_content'] = isset($request['no_of_content'])  ? $request['no_of_content'] : 1;
                 $requestData['view_all'] = isset($request['view_all'])  ? $request['view_all'] : 0;
 
-                if($requestData['type'] == 3){
-                    $requestData['is_paid'] = isset($request['is_paid']) ? $request['is_paid'] : 0;
-                } elseif($requestData['type'] == 8){
+                if($requestData['type'] == 8){
                     $requestData['category_id'] = isset($request['category_id']) ? $request['category_id'] : 0;
                     $requestData['is_paid'] = isset($request['is_paid']) ? $request['is_paid'] : 0;
                 } else{

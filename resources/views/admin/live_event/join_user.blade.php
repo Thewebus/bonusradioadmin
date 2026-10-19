@@ -15,12 +15,12 @@
                 <div class="col-sm-10">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{__('Label.Dashboard')}}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('liveevent.index') }}">Live Event</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('video.index') }}">{{__('Label.videos_vod')}}</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Join User</li>
                     </ol>
                 </div>
                 <div class="col-sm-2 d-flex align-items-center justify-content-end">
-                    <a href="{{ route('liveevent.index') }}" class="btn btn-default mw-120" style="margin-top: -14px;">Live Event</a>
+                    <a href="{{ route('video.index') }}" class="btn btn-default mw-120" style="margin-top: -14px;">{{__('Label.videos_vod')}}</a>
                 </div>
             </div>
 

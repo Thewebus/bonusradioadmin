@@ -119,8 +119,7 @@ Route::group(['middleware' => 'installation'], function () {
         // Notification
         Route::resource('notification', NotificationController::class)->only(['index', 'create', 'store']);
         Route::get('notifications/setting', [NotificationController::class, 'setting'])->name('notification.setting');
-        // Live Event
-        Route::resource('liveevent', LiveEventController::class)->only(['index']);
+        // Live Event (merged into Video — only the purchase report survives)
         Route::get('liveevent/{id}', [LiveEventController::class, 'LiveEventIndex'])->name('liveevent.user.index');
         // Ads Premium
         Route::resource('adspremium', AdsPremiumController::class)->only(['index']);
@@ -183,8 +182,6 @@ Route::group(['middleware' => 'installation'], function () {
             // Notification
             Route::resource('notification', NotificationController::class)->only(['destroy']);
             Route::post('notifications/setting', [NotificationController::class, 'settingsave'])->name('notification.settingsave');
-            // Live Event
-            Route::resource('liveevent', LiveEventController::class)->only(['store', 'update', 'destroy']);
             Route::get('notifications/setting', [NotificationController::class, 'setting'])->name('notification.setting');
             Route::post('liveevent/delete/{liveevent_id}/{id}', [LiveEventController::class, 'LiveEventDelete'])->name('liveevent.user.delete');
             // Ads Premium

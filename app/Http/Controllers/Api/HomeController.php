@@ -1566,20 +1566,21 @@ class HomeController extends Controller
                         $this->common->imageNameToUrl($data[$i]['data'], 'image', $this->folder_city);
                     } else if ($data[$i]['type'] == 8) {
 
-                        $content = Live_Event::where('is_vod', 1)->where('status', 1)->where('category_id', $data[$i]['category_id'])->whereNull('video_series_id');
-
-                        if ($data[$i]['order_by_upload'] == 1) {
-                            $content->orderBy('id', 'desc');
-                        } else {
-                            $content->orderBy('id', 'asc');
-                        }
+                        // Home preview: one tile per video category — each
+                        // category's single most recent video — rather than
+                        // several videos from the one category the section
+                        // was configured with. category_id/order_by_upload
+                        // are intentionally not used as filters here.
+                        $base = Live_Event::where('is_vod', 1)->where('status', 1)->whereNull('video_series_id')->whereNotNull('category_id');
 
                         if ($data[$i]['is_paid'] == 0) {
-                            $content->where('is_paid', 0);
+                            $base->where('is_paid', 0);
                         } else if ($data[$i]['is_paid'] == 1) {
-                            $content->where('is_paid', 1);
+                            $base->where('is_paid', 1);
                         }
-                        $query = $content->take($data[$i]['no_of_content'])->get();
+
+                        $latestIdPerCategory = (clone $base)->selectRaw('MAX(id) as id')->groupBy('category_id')->pluck('id');
+                        $query = Live_Event::whereIn('id', $latestIdPerCategory)->orderBy('id', 'desc')->take($data[$i]['no_of_content'])->get();
 
                         $this->common->imageNameToUrl($query, 'portrait_img', $this->folder_live_event);
                         $this->common->imageNameToUrl($query, 'landscape_img', $this->folder_live_event);

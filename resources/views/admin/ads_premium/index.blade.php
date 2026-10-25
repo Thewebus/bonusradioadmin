@@ -102,6 +102,7 @@
                                 <th>{{ __('Label.ads_display_duration') }}</th>
                                 <th>{{ __('Label.Status') }}</th>
                                 <th>{{ __('Label.ads_views') }}</th>
+                                <th>{{ __('Label.ads_uniques') }}</th>
                                 <th>{{ __('Label.ads_clicks') }}</th>
                                 <th>{{ __('Label.Action') }}</th>
                             </tr>
@@ -254,6 +255,13 @@
                     {
                         data: 'total_views',
                         name: 'total_views',
+                        render: function(data) {
+                            return parseInt(data || 0).toLocaleString('fr-FR');
+                        }
+                    },
+                    {
+                        data: 'total_uniques',
+                        name: 'total_uniques',
                         render: function(data) {
                             return parseInt(data || 0).toLocaleString('fr-FR');
                         }

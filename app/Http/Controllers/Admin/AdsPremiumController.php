@@ -9,6 +9,7 @@ use App\Models\Common;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 
@@ -35,6 +36,7 @@ class AdsPremiumController extends Controller
 
                 $data = Ads_Premium::withSum('stats as total_views', 'views')
                     ->withSum('stats as total_clicks', 'clicks')
+                    ->addSelect(DB::raw('(SELECT COUNT(DISTINCT v.device_id) FROM tbl_ads_premium_viewer v WHERE v.ads_premium_id = tbl_ads_premium.id) as total_uniques'))
                     ->orderBy('id', 'DESC');
                 if ($input_search != null && isset($input_search)) {
                     $data->where(function ($query) use ($input_search) {
@@ -207,23 +209,47 @@ class AdsPremiumController extends Controller
         if ($ad) {
             $adsQuery->where('id', $ad->id);
         }
-        $rows = $adsQuery->get()->map(function ($row) {
+        // Unique users = distinct devices over the WHOLE period (a device
+        // seen on several days counts once), not a sum of daily uniques.
+        $viewers = DB::table('tbl_ads_premium_viewer')
+            ->whereBetween('date', [$from->toDateString(), $to->toDateString()]);
+        if ($ad) {
+            $viewers->where('ads_premium_id', $ad->id);
+        }
+        $uniquesPerAd = (clone $viewers)
+            ->selectRaw('ads_premium_id, COUNT(DISTINCT device_id) as total')
+            ->groupBy('ads_premium_id')
+            ->pluck('total', 'ads_premium_id');
+
+        $rows = $adsQuery->get()->map(function ($row) use ($uniquesPerAd) {
             $row->views = (int) $row->views;
             $row->clicks = (int) $row->clicks;
+            $row->uniques = (int) ($uniquesPerAd[$row->id] ?? 0);
+            $row->frequency = $row->uniques > 0 ? round($row->views / $row->uniques, 1) : 0;
             $row->ctr = $row->views > 0 ? round($row->clicks * 100 / $row->views, 2) : 0;
             return $row;
         });
 
         $daily = collect();
         if ($ad) {
+            $uniquesPerDay = (clone $viewers)
+                ->selectRaw('date, COUNT(DISTINCT device_id) as total')
+                ->groupBy('date')
+                ->pluck('total', 'date');
             $daily = Ads_Premium_Stat::where('ads_premium_id', $ad->id)
                 ->whereBetween('date', [$from->toDateString(), $to->toDateString()])
                 ->orderBy('date')
-                ->get();
+                ->get()
+                ->map(function ($day) use ($uniquesPerDay) {
+                    $day->uniques = (int) ($uniquesPerDay[$day->date] ?? 0);
+                    return $day;
+                });
         }
 
         $totalViews = $rows->sum('views');
         $totalClicks = $rows->sum('clicks');
+        // Across all ads: distinct devices that saw at least one of them.
+        $totalUniques = (int) (clone $viewers)->distinct()->count('device_id');
 
         return [
             'from' => $from,
@@ -232,6 +258,8 @@ class AdsPremiumController extends Controller
             'rows' => $rows,
             'daily' => $daily,
             'total_views' => $totalViews,
+            'total_uniques' => $totalUniques,
+            'total_frequency' => $totalUniques > 0 ? round($totalViews / $totalUniques, 1) : 0,
             'total_clicks' => $totalClicks,
             'total_ctr' => $totalViews > 0 ? round($totalClicks * 100 / $totalViews, 2) : 0,
         ];

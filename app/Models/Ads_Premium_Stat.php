@@ -32,4 +32,15 @@ class Ads_Premium_Stat extends Model
             [$adId]
         );
     }
+
+    // Records that this device saw the ad today (once per day — further
+    // views the same day only count as impressions). Feeds unique users.
+    public static function trackViewer(int $adId, string $deviceId): void
+    {
+        DB::statement(
+            "INSERT IGNORE INTO tbl_ads_premium_viewer (ads_premium_id, device_id, date, created_at)
+             VALUES (?, ?, CURDATE(), NOW())",
+            [$adId, $deviceId]
+        );
+    }
 }

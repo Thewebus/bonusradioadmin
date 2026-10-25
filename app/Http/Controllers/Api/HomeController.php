@@ -1249,6 +1249,11 @@ class HomeController extends Controller
             }
 
             Ads_Premium_Stat::track((int) $request->ad_id, $counter);
+            // Anonymous per-install id sent by the app (absent on older
+            // versions) — only views feed the unique-users figure.
+            if ($counter == 'views' && preg_match('/^[A-Za-z0-9_-]{8,64}$/', (string) $request->device_id)) {
+                Ads_Premium_Stat::trackViewer((int) $request->ad_id, $request->device_id);
+            }
             return $this->common->API_Response(200, __('api_msg.get_record_successfully'), []);
         } catch (Exception $e) {
             return response()->json(array('status' => 400, 'errors' => $e->getMessage()));

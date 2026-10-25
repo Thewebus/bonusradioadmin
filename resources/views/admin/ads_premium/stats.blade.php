@@ -58,25 +58,34 @@
             </div>
 
             <div class="row mt-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card custom-border-card text-center p-3">
                         <div class="text-gray">{{ __('Label.ads_views') }}</div>
                         <h3 class="mb-0">{{ number_format($total_views, 0, ',', ' ') }}</h3>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <div class="card custom-border-card text-center p-3">
+                        <div class="text-gray">{{ __('Label.ads_uniques') }}</div>
+                        <h3 class="mb-0">{{ number_format($total_uniques, 0, ',', ' ') }}</h3>
+                        <small class="text-gray">{{ number_format($total_frequency, 1, ',', ' ') }} {{ __('Label.ads_frequency') }}</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="card custom-border-card text-center p-3">
                         <div class="text-gray">{{ __('Label.ads_clicks') }}</div>
                         <h3 class="mb-0">{{ number_format($total_clicks, 0, ',', ' ') }}</h3>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card custom-border-card text-center p-3">
                         <div class="text-gray">{{ __('Label.ads_ctr') }}</div>
                         <h3 class="mb-0">{{ number_format($total_ctr, 2, ',', ' ') }} %</h3>
                     </div>
                 </div>
             </div>
+
+            <p class="text-gray small mt-2 mb-0">{{ __('Label.ads_uniques_hint') }}</p>
 
             <div class="card custom-border-card mt-3">
                 <h5 class="card-header">{{ $ad ? $ad->crea_name : __('Label.ads_all') }} — {{ $from->format('d/m/Y') }} → {{ $to->format('d/m/Y') }}</h5>
@@ -87,6 +96,8 @@
                                 <th>{{ __('Label.nom_crea') }}</th>
                                 <th>{{ __('Label.Status') }}</th>
                                 <th>{{ __('Label.ads_views') }}</th>
+                                <th>{{ __('Label.ads_uniques') }}</th>
+                                <th>{{ __('Label.ads_frequency') }}</th>
                                 <th>{{ __('Label.ads_clicks') }}</th>
                                 <th>{{ __('Label.ads_ctr') }}</th>
                                 <th></th>
@@ -104,6 +115,8 @@
                                         @endif
                                     </td>
                                     <td>{{ number_format($row->views, 0, ',', ' ') }}</td>
+                                    <td>{{ number_format($row->uniques, 0, ',', ' ') }}</td>
+                                    <td>{{ number_format($row->frequency, 1, ',', ' ') }}</td>
                                     <td>{{ number_format($row->clicks, 0, ',', ' ') }}</td>
                                     <td>{{ number_format($row->ctr, 2, ',', ' ') }} %</td>
                                     <td>
@@ -113,7 +126,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="6">{{ __('Label.ads_no_data') }}</td></tr>
+                                <tr><td colspan="8">{{ __('Label.ads_no_data') }}</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -129,6 +142,7 @@
                                 <tr style="background: #F9FAFF;">
                                     <th style="width: 130px;">{{ __('Label.ads_date') }}</th>
                                     <th style="width: 110px;" class="text-center">{{ __('Label.ads_views') }}</th>
+                                    <th style="width: 130px;" class="text-center">{{ __('Label.ads_uniques') }}</th>
                                     <th style="width: 110px;" class="text-center">{{ __('Label.ads_clicks') }}</th>
                                     <th></th>
                                 </tr>
@@ -138,13 +152,14 @@
                                     <tr>
                                         <td>{{ \Carbon\Carbon::parse($day->date)->format('d/m/Y') }}</td>
                                         <td class="text-center">{{ number_format($day->views, 0, ',', ' ') }}</td>
+                                        <td class="text-center">{{ number_format($day->uniques, 0, ',', ' ') }}</td>
                                         <td class="text-center">{{ number_format($day->clicks, 0, ',', ' ') }}</td>
                                         <td>
                                             <div style="background: #E3352B; height: 12px; border-radius: 6px; width: {{ max(1, round($day->views * 100 / $maxDaily)) }}%;"></div>
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="4" class="text-center">{{ __('Label.ads_no_data') }}</td></tr>
+                                    <tr><td colspan="5" class="text-center">{{ __('Label.ads_no_data') }}</td></tr>
                                 @endforelse
                             </tbody>
                         </table>

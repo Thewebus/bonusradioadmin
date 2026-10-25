@@ -69,6 +69,7 @@
                                         <option value="live_event">{{__('Label.live_event')}}</option>
                                         <option value="artist">{{__('Label.Artist')}}</option>
                                         <option value="category">{{__('Label.Category')}}</option>
+                                        <option value="category_compact">{{__('Label.category_compact')}}</option>
                                         <option value="language">{{__('Label.Language')}}</option>
                                         <option value="city">{{__('Label.City')}}</option>
                                     </select>
@@ -281,6 +282,7 @@
                                                 <option value="live_event">{{__('Label.live_event')}}</option>
                                                 <option value="artist">{{__('Label.Artist')}}</option>
                                                 <option value="category">{{__('Label.Category')}}</option>
+                                                <option value="category_compact">{{__('Label.category_compact')}}</option>
                                                 <option value="language">{{__('Label.Language')}}</option>
                                                 <option value="city">{{__('Label.City')}}</option>
                                             </select>
@@ -530,6 +532,7 @@
                     $("#screen_layout option[value='live_event']").hide();
                     $("#screen_layout option[value='artist']").hide();
                     $("#screen_layout option[value='category']").hide();
+                    $("#screen_layout option[value='category_compact']").hide();
                     $("#screen_layout option[value='language']").hide();
                     $("#screen_layout option[value='city']").hide();
 
@@ -556,6 +559,7 @@
                     $("#screen_layout option[value='live_event']").hide();
                     $("#screen_layout option[value='artist']").hide();
                     $("#screen_layout option[value='category']").hide();
+                    $("#screen_layout option[value='category_compact']").hide();
                     $("#screen_layout option[value='language']").hide();
                     $("#screen_layout option[value='city']").hide();
 
@@ -588,6 +592,7 @@
                         $("#screen_layout option[value='live_event']").hide();
                         $("#screen_layout option[value='artist']").show();
                         $("#screen_layout option[value='category']").hide();
+                        $("#screen_layout option[value='category_compact']").hide();
                         $("#screen_layout option[value='language']").hide();
                         $("#screen_layout option[value='city']").hide();
 
@@ -600,6 +605,7 @@
                         $("#screen_layout option[value='live_event']").hide();
                         $("#screen_layout option[value='artist']").hide();
                         $("#screen_layout option[value='category']").show();
+                        $("#screen_layout option[value='category_compact']").show();
                         $("#screen_layout option[value='language']").hide();
                         $("#screen_layout option[value='city']").hide();
 
@@ -612,6 +618,7 @@
                         $("#screen_layout option[value='live_event']").hide();
                         $("#screen_layout option[value='artist']").hide();
                         $("#screen_layout option[value='category']").hide();
+                        $("#screen_layout option[value='category_compact']").hide();
                         $("#screen_layout option[value='language']").show();
                         $("#screen_layout option[value='city']").hide();
 
@@ -624,6 +631,7 @@
                         $("#screen_layout option[value='live_event']").hide();
                         $("#screen_layout option[value='artist']").hide();
                         $("#screen_layout option[value='category']").hide();
+                        $("#screen_layout option[value='category_compact']").hide();
                         $("#screen_layout option[value='language']").hide();
                         $("#screen_layout option[value='city']").show();
 
@@ -636,6 +644,7 @@
                         $("#screen_layout option[value='live_event']").show();
                         $("#screen_layout option[value='artist']").hide();
                         $("#screen_layout option[value='category']").hide();
+                        $("#screen_layout option[value='category_compact']").hide();
                         $("#screen_layout option[value='language']").hide();
                         $("#screen_layout option[value='city']").hide();
 
@@ -741,6 +750,8 @@
                         var screen_layout = "{{__('Label.Artist')}}";
                     } else if (resp.result[i].screen_layout == "category") {
                         var screen_layout = "{{__('Label.Category')}}";
+                    } else if (resp.result[i].screen_layout == "category_compact") {
+                        var screen_layout = "{{__('Label.category_compact')}}";
                     } else if (resp.result[i].screen_layout == "language") {
                         var screen_layout = "{{__('Label.Language')}}";
                     } else if (resp.result[i].screen_layout == "city") {
@@ -893,6 +904,7 @@
                         $("#edit_screen_layout option[value='live_event']").hide();
                         $("#edit_screen_layout option[value='artist']").hide();
                         $("#edit_screen_layout option[value='category']").hide();
+                        $("#edit_screen_layout option[value='category_compact']").hide();
                         $("#edit_screen_layout option[value='language']").hide();
                         $("#edit_screen_layout option[value='city']").hide();
 
@@ -914,6 +926,7 @@
                         $("#edit_screen_layout option[value='live_event']").hide();
                         $("#edit_screen_layout option[value='artist']").hide();
                         $("#edit_screen_layout option[value='category']").hide();
+                        $("#edit_screen_layout option[value='category_compact']").hide();
                         $("#edit_screen_layout option[value='language']").hide();
                         $("#edit_screen_layout option[value='city']").hide();
 
@@ -933,6 +946,7 @@
                         $("#edit_screen_layout option[value='live_event']").hide();
                         $("#edit_screen_layout option[value='artist']").hide();
                         $("#edit_screen_layout option[value='category']").hide();
+                        $("#edit_screen_layout option[value='category_compact']").hide();
                         $("#edit_screen_layout option[value='language']").hide();
                         $("#edit_screen_layout option[value='city']").hide();
 
@@ -944,6 +958,7 @@
                         } else if(resp.result.type == 5){
                             $(".edit_order_by_upload").show();
                             $("#edit_screen_layout option[value='category']").show();
+                            $("#edit_screen_layout option[value='category_compact']").show();
                         } else if(resp.result.type == 6){
                             $(".edit_order_by_upload").show();
                             $("#edit_screen_layout option[value='language']").show();
@@ -972,6 +987,7 @@
                             $("#edit_screen_layout option[value='live_event']").hide();
                             $("#edit_screen_layout option[value='artist']").hide();
                             $("#edit_screen_layout option[value='category']").hide();
+                            $("#edit_screen_layout option[value='category_compact']").hide();
                             $("#edit_screen_layout option[value='language']").hide();
                             $("#edit_screen_layout option[value='city']").hide();
 
@@ -998,6 +1014,7 @@
                             $("#edit_screen_layout option[value='live_event']").hide();
                             $("#edit_screen_layout option[value='artist']").hide();
                             $("#edit_screen_layout option[value='category']").hide();
+                            $("#edit_screen_layout option[value='category_compact']").hide();
                             $("#edit_screen_layout option[value='language']").hide();
                             $("#edit_screen_layout option[value='city']").hide();
 
@@ -1027,6 +1044,7 @@
                             $("#edit_screen_layout option[value='sqaure']").hide();
                             $("#edit_screen_layout option[value='artist']").hide();
                             $("#edit_screen_layout option[value='category']").hide();
+                            $("#edit_screen_layout option[value='category_compact']").hide();
                             $("#edit_screen_layout option[value='language']").hide();
                             $("#edit_screen_layout option[value='city']").hide();
 
@@ -1035,6 +1053,7 @@
                                 $("#edit_screen_layout option[value='live_event']").hide();
                                 $("#edit_screen_layout option[value='artist']").show();
                                 $("#edit_screen_layout option[value='category']").hide();
+                                $("#edit_screen_layout option[value='category_compact']").hide();
                                 $("#edit_screen_layout option[value='language']").hide();
                                 $("#edit_screen_layout option[value='city']").hide();
 
@@ -1047,6 +1066,7 @@
                                 $("#edit_screen_layout option[value='live_event']").hide();
                                 $("#edit_screen_layout option[value='artist']").hide();
                                 $("#edit_screen_layout option[value='category']").show();
+                                $("#edit_screen_layout option[value='category_compact']").show();
                                 $("#edit_screen_layout option[value='language']").hide();
                                 $("#edit_screen_layout option[value='city']").hide();
 
@@ -1059,6 +1079,7 @@
                                 $("#edit_screen_layout option[value='live_event']").hide();
                                 $("#edit_screen_layout option[value='artist']").hide();
                                 $("#edit_screen_layout option[value='category']").hide();
+                                $("#edit_screen_layout option[value='category_compact']").hide();
                                 $("#edit_screen_layout option[value='language']").show();
                                 $("#edit_screen_layout option[value='city']").hide();
 
@@ -1071,6 +1092,7 @@
                                 $("#edit_screen_layout option[value='live_event']").hide();
                                 $("#edit_screen_layout option[value='artist']").hide();
                                 $("#edit_screen_layout option[value='category']").hide();
+                                $("#edit_screen_layout option[value='category_compact']").hide();
                                 $("#edit_screen_layout option[value='language']").show();
                                 $("#edit_screen_layout option[value='city']").hide();
 
@@ -1083,6 +1105,7 @@
                                 $("#edit_screen_layout option[value='live_event']").show();
                                 $("#edit_screen_layout option[value='artist']").hide();
                                 $("#edit_screen_layout option[value='category']").hide();
+                                $("#edit_screen_layout option[value='category_compact']").hide();
                                 $("#edit_screen_layout option[value='language']").hide();
                                 $("#edit_screen_layout option[value='city']").hide();
 

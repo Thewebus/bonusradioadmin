@@ -84,6 +84,19 @@
                                                 <textarea name="app_desripation" rows="1" class="form-control" placeholder="Enter App Desripation">{{$result['app_desripation']}}</textarea>
                                             </div>
                                         </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4">
+                                                <label>{{__('Label.title_font_weight')}}</label>
+                                                @php $titleWeight = $result['title_font_weight'] ?? '700'; @endphp
+                                                <select name="title_font_weight" class="form-control">
+                                                    <option value="500" {{ $titleWeight == '500' ? 'selected' : '' }}>Normal</option>
+                                                    <option value="700" {{ $titleWeight == '700' ? 'selected' : '' }}>Gras</option>
+                                                    <option value="800" {{ $titleWeight == '800' ? 'selected' : '' }}>Très gras</option>
+                                                    <option value="900" {{ $titleWeight == '900' ? 'selected' : '' }}>Noir</option>
+                                                </select>
+                                                <small class="text-gray">{{__('Label.title_font_weight_hint')}}</small>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group ml-5">

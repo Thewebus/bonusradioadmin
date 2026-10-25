@@ -505,7 +505,7 @@ return [
     'is_premium' => "Is Premium",
     'view_all' => "View All",
     'add_section' => "Add Section",
-    'live_event' => "Live Event",
+    'live_event' => "Video",
     'show' => "Show",
     'hide' => "Hide",
     'edit_section' => "Edit Section",

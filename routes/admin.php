@@ -122,6 +122,8 @@ Route::group(['middleware' => 'installation'], function () {
         // Live Event (merged into Video — only the purchase report survives)
         Route::get('liveevent/{id}', [LiveEventController::class, 'LiveEventIndex'])->name('liveevent.user.index');
         // Ads Premium
+        Route::get('adspremium/stats', [AdsPremiumController::class, 'stats'])->name('adspremium.stats');
+        Route::get('adspremium/stats/pdf', [AdsPremiumController::class, 'statsPdf'])->name('adspremium.stats.pdf');
         Route::resource('adspremium', AdsPremiumController::class)->only(['index']);
         // Videos (video on demand)
         Route::resource('video', VideoController::class)->only(['index']);

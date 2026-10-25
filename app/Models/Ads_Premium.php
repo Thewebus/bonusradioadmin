@@ -15,7 +15,15 @@ class Ads_Premium extends Model
     protected $casts = [
         'id' => 'integer',
         'crea_name' => 'string',
+        'image' => 'string',
         'image_url' => 'string',
+        'link_url' => 'string',
+        'display_duration' => 'integer',
         'status' => 'integer',
     ];
+
+    public function stats()
+    {
+        return $this->hasMany(Ads_Premium_Stat::class, 'ads_premium_id');
+    }
 }

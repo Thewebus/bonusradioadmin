@@ -8,7 +8,10 @@
         @include('admin.layout.header')
 
         <div class="body-content">
-            <h1 class="page-title-sm">{{ __('Label.ads_premium') }}</h1>
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="page-title-sm">{{ __('Label.ads_premium') }}</h1>
+                <a href="{{ route('adspremium.stats') }}" class="btn btn-default mw-120"><i class="fa-solid fa-chart-column mr-2"></i>{{ __('Label.ads_stats') }}</a>
+            </div>
 
             <div class="border-bottom row mb-3">
                 <div class="col-sm-12">
@@ -23,18 +26,51 @@
                 <h5 class="card-header">{{ __('Label.add_ads_premium') }}</h5>
                 <div class="card-body">
                     <form id="ads_premium" enctype="multipart/form-data">
-                        <input type="hidden" name="id">
                         <div class="form-row">
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <div class="form-group">
                                     <label>{{ __('Label.nom_crea') }}<span class="text-danger">*</span></label>
                                     <input type="text" name="crea_name" class="form-control" placeholder="Enter Nom CREA" autofocus>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>{{ __('Label.ads_display_duration') }}<span class="text-danger">*</span></label>
+                                            <input type="number" name="display_duration" class="form-control" value="12" min="3" max="120">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>{{ __('Label.Status') }}</label>
+                                            <select name="status" class="form-control">
+                                                <option value="1">{{ __('Label.Active') }}</option>
+                                                <option value="0">{{ __('Label.ads_inactive') }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group">
-                                    <label>{{ __('Label.lien_url') }}<span class="text-danger">*</span></label>
+                                    <label>{{ __('Label.ads_link_url') }}</label>
+                                    <input type="text" name="link_url" class="form-control" placeholder="https://wa.me/225XXXXXXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ __('Label.ads_image_url') }}</label>
                                     <input type="text" name="image_url" class="form-control" placeholder="https://example.com/your-image.png">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label>{{ __('Label.ads_poster') }}<span class="text-danger">*</span></label>
+                                    <div class="avatar-upload-landscape">
+                                        <div class="avatar-edit-landscape">
+                                            <input type='file' name="image" id="imageUploadLandscape" accept=".png, .jpg, .jpeg, .webp" />
+                                            <label for="imageUploadLandscape" title="Select File"></label>
+                                        </div>
+                                        <div class="avatar-preview-landscape">
+                                            <img src="{{ asset('assets/imgs/upload_img.png') }}" alt="upload_img.png" id="imagePreviewLandscape">
+                                        </div>
+                                    </div>
+                                    <label class="mt-3 text-gray">{{ __('Label.ads_poster_hint') }}</label>
                                 </div>
                             </div>
                         </div>
@@ -61,8 +97,12 @@
                         <thead>
                             <tr style="background: #F9FAFF;">
                                 <th>{{ __('Label.#') }}</th>
+                                <th>{{ __('Label.ads_poster') }}</th>
                                 <th>{{ __('Label.nom_crea') }}</th>
-                                <th>{{ __('Label.lien_url') }}</th>
+                                <th>{{ __('Label.ads_display_duration') }}</th>
+                                <th>{{ __('Label.Status') }}</th>
+                                <th>{{ __('Label.ads_views') }}</th>
+                                <th>{{ __('Label.ads_clicks') }}</th>
                                 <th>{{ __('Label.Action') }}</th>
                             </tr>
                         </thead>
@@ -80,19 +120,53 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form id="edit_ads_premium" autocomplete="off">
+                        <form id="edit_ads_premium" autocomplete="off" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <div class="form-row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-7">
                                         <div class="form-group">
                                             <label>{{ __('Label.nom_crea') }}<span class="text-danger">*</span></label>
                                             <input type="text" name="crea_name" id="edit_crea_name" class="form-control" placeholder="Enter Nom CREA">
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                        <div class="form-row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>{{ __('Label.ads_display_duration') }}<span class="text-danger">*</span></label>
+                                                    <input type="number" name="display_duration" id="edit_display_duration" class="form-control" min="3" max="120">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>{{ __('Label.Status') }}</label>
+                                                    <select name="status" id="edit_status" class="form-control">
+                                                        <option value="1">{{ __('Label.Active') }}</option>
+                                                        <option value="0">{{ __('Label.ads_inactive') }}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="form-group">
-                                            <label>{{ __('Label.lien_url') }}<span class="text-danger">*</span></label>
+                                            <label>{{ __('Label.ads_link_url') }}</label>
+                                            <input type="text" name="link_url" id="edit_link_url" class="form-control" placeholder="https://wa.me/225XXXXXXXX">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>{{ __('Label.ads_image_url') }}</label>
                                             <input type="text" name="image_url" id="edit_image_url" class="form-control" placeholder="https://example.com/your-image.png">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label>{{ __('Label.ads_poster') }}</label>
+                                            <div class="avatar-upload-landscape">
+                                                <div class="avatar-edit-landscape">
+                                                    <input type='file' name="image" id="imageUploadLandscapeModel" accept=".png, .jpg, .jpeg, .webp" />
+                                                    <label for="imageUploadLandscapeModel" title="Select File"></label>
+                                                </div>
+                                                <div class="avatar-preview-landscape">
+                                                    <img src="{{ asset('assets/imgs/upload_img.png') }}" alt="upload_img.png" id="imagePreviewLandscapeModel">
+                                                </div>
+                                            </div>
+                                            <label class="mt-3 text-gray">{{ __('Label.ads_poster_hint') }}</label>
                                         </div>
                                     </div>
                                 </div>
@@ -142,20 +216,53 @@
                         name: 'DT_RowIndex'
                     },
                     {
-                        data: 'crea_name',
-                        name: 'crea_name',
+                        data: 'image_preview',
+                        name: 'image_preview',
+                        orderable: false,
+                        searchable: false,
                         render: function(data) {
-                            return data ? data : '-';
+                            return '<img src="' + data + '" style="height: 50px; width: 90px; object-fit: cover; border-radius: 6px;">';
                         }
                     },
                     {
-                        data: 'image_url',
-                        name: 'image_url',
-                        render: function(data) {
-                            if (data) {
-                                return '<a href="' + data + '" target="_blank">' + data + '</a>';
+                        data: 'crea_name',
+                        name: 'crea_name',
+                        render: function(data, type, row) {
+                            var html = data ? $('<div>').text(data).html() : '-';
+                            if (row.link_url) {
+                                html += '<br><a href="' + row.link_url + '" target="_blank" class="small"><i class="fa-solid fa-link"></i> lien</a>';
                             }
-                            return '-';
+                            return html;
+                        }
+                    },
+                    {
+                        data: 'display_duration',
+                        name: 'display_duration',
+                        render: function(data) {
+                            return data + ' s';
+                        }
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        render: function(data) {
+                            return data == 1 ?
+                                '<span class="badge badge-success">{{ __('Label.Active') }}</span>' :
+                                '<span class="badge badge-secondary">{{ __('Label.ads_inactive') }}</span>';
+                        }
+                    },
+                    {
+                        data: 'total_views',
+                        name: 'total_views',
+                        render: function(data) {
+                            return parseInt(data || 0).toLocaleString('fr-FR');
+                        }
+                    },
+                    {
+                        data: 'total_clicks',
+                        name: 'total_clicks',
+                        render: function(data) {
+                            return parseInt(data || 0).toLocaleString('fr-FR');
                         }
                     },
                     {
@@ -199,13 +306,14 @@
         }
 
         $(document).on("click", ".edit_ads_premium", function() {
-            var id = $(this).data('id');
-            var crea_name = $(this).data('crea_name');
-            var image_url = $(this).data('image_url');
-
-            $(".modal-body #edit_id").val(id);
-            $(".modal-body #edit_crea_name").val(crea_name);
-            $(".modal-body #edit_image_url").val(image_url);
+            $(".modal-body #edit_id").val($(this).data('id'));
+            $(".modal-body #edit_crea_name").val($(this).data('crea_name'));
+            $(".modal-body #edit_image_url").val($(this).data('image_url'));
+            $(".modal-body #edit_link_url").val($(this).data('link_url'));
+            $(".modal-body #edit_display_duration").val($(this).data('display_duration'));
+            $(".modal-body #edit_status").val($(this).data('status'));
+            $("#imageUploadLandscapeModel").val('');
+            $("#imagePreviewLandscapeModel").attr("src", $(this).data('image_preview'));
         });
 
         function update_ads_premium() {
@@ -231,8 +339,10 @@
                     processData: false,
                     success: function(resp) {
                         $("#dvloader").hide();
-                        $('#EditModel').modal('toggle');
-                        get_responce_message(resp, 'edit_ads_premium', '{{ route("adspremium.index") }}');
+                        if (resp.status == '200') {
+                            $('#EditModel').modal('toggle');
+                        }
+                        get_responce_message(resp, resp.status == '200' ? 'edit_ads_premium' : '', resp.status == '200' ? '{{ route("adspremium.index") }}' : '');
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                         $("#dvloader").hide();

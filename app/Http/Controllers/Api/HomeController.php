@@ -8,6 +8,7 @@ use App\Models\Song;
 use App\Models\Language;
 use App\Models\Artist;
 use App\Models\Ads_Premium;
+use App\Models\Ads_Premium_Stat;
 use App\Models\Category;
 use App\Models\Banner;
 use App\Models\Comment;
@@ -50,6 +51,7 @@ class HomeController extends Controller
     private $folder_language = "language";
     private $folder_live_event = "live_event";
     private $folder_video_series = "video_series";
+    private $folder_ads_premium = "ads_premium";
     private $folder_notification = "notification";
     private $folder_user = "user";
     public $common;
@@ -1205,10 +1207,49 @@ class HomeController extends Controller
             $data = $data->get();
 
             if (count($data) > 0) {
+                // `image_url` is what the app displays: the uploaded poster
+                // when there is one, else the external URL entered in admin.
+                foreach ($data as $row) {
+                    if (!empty($row['image'])) {
+                        $row['image_url'] = $this->common->Get_Image($this->folder_ads_premium, $row['image']);
+                    }
+                    unset($row['image']);
+                }
                 return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data, $pagination);
             } else {
                 return $this->common->API_Response(400, __('api_msg.data_not_found'));
             }
+        } catch (Exception $e) {
+            return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
+        }
+    }
+    // One view (poster shown on screen) or click of an ad, counted per day.
+    // No login needed — every listener sees the ads.
+    public function add_ad_view(Request $request)
+    {
+        return $this->trackAd($request, 'views');
+    }
+    public function add_ad_click(Request $request)
+    {
+        return $this->trackAd($request, 'clicks');
+    }
+    private function trackAd(Request $request, $counter)
+    {
+        try {
+            $validation = Validator::make(
+                $request->all(),
+                ['ad_id' => 'required|numeric'],
+                ['ad_id.required' => __('api_msg.content_id_is_required')]
+            );
+            if ($validation->fails()) {
+                return $this->common->API_Response(400, $validation->errors()->first());
+            }
+            if (!Ads_Premium::where('id', $request->ad_id)->exists()) {
+                return $this->common->API_Response(400, __('api_msg.data_not_found'));
+            }
+
+            Ads_Premium_Stat::track((int) $request->ad_id, $counter);
+            return $this->common->API_Response(200, __('api_msg.get_record_successfully'), []);
         } catch (Exception $e) {
             return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
         }

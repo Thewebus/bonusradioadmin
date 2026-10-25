@@ -23,7 +23,6 @@ class Live_Event extends Model
         'is_paid' => 'integer',
         'price' => 'integer',
         'type' => 'integer',
-        'is_vod' => 'integer',
         'category_id' => 'integer',
         'video_source' => 'integer',
         'video_series_id' => 'integer',

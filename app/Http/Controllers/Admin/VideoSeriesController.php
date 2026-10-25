@@ -39,7 +39,7 @@ class VideoSeriesController extends Controller
                 $this->common->imageNameToUrl($data, 'portrait_img', $this->folder);
                 $this->common->imageNameToUrl($data, 'landscape_img', $this->folder);
 
-                $episode_counts = Live_Event::where('is_vod', 1)
+                $episode_counts = Live_Event::query()
                     ->whereNotNull('video_series_id')
                     ->selectRaw('video_series_id, count(*) as total')
                     ->groupBy('video_series_id')
@@ -154,7 +154,7 @@ class VideoSeriesController extends Controller
 
             if (isset($data)) {
                 // Episodes keep existing as standalone videos rather than being deleted.
-                Live_Event::where('is_vod', 1)->where('video_series_id', $id)->update(['video_series_id' => null, 'episode_number' => null]);
+                Live_Event::where('video_series_id', $id)->update(['video_series_id' => null, 'episode_number' => null]);
                 $this->common->deleteImageToFolder($this->folder, $data['portrait_img']);
                 $this->common->deleteImageToFolder($this->folder, $data['landscape_img']);
                 $data->delete();

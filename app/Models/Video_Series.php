@@ -24,6 +24,6 @@ class Video_Series extends Model
 
     public function episodes()
     {
-        return $this->hasMany(Live_Event::class, 'video_series_id')->where('is_vod', 1);
+        return $this->hasMany(Live_Event::class, 'video_series_id');
     }
 }

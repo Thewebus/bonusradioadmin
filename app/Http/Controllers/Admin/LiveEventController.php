@@ -9,10 +9,9 @@ use Illuminate\Http\Request;
 use Exception;
 
 /**
- * "Live events" were merged into the video catalog (is_vod=1) — this
- * controller now only serves the "who purchased/joined this" report
- * (Event_Join_User has no is_vod constraint, so it already works for any
- * tbl_live_event row, video or not), reachable from the Video admin's
+ * "Live events" were merged into the video catalog — this controller now
+ * only serves the "who purchased/joined this" report (Event_Join_User
+ * works for any tbl_live_event row), reachable from the Video admin's
  * row actions instead of its own former CRUD screen.
  */
 class LiveEventController extends Controller

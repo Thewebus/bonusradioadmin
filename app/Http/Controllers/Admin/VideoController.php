@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 
 /**
- * Video-on-demand catalogue. Rows live in tbl_live_event (is_vod = 1) so the
+ * Video-on-demand catalogue. Rows live in tbl_live_event (every row is a video) so the
  * paid/free + join flow already used by live events keeps working; `date`
  * is the last day the video stays available (2099-12-31 = no expiry).
  */
@@ -43,7 +43,7 @@ class VideoController extends Controller
             if ($request->ajax()) {
                 $input_search = $request['input_search'];
 
-                $data = Live_Event::where('is_vod', 1)->latest();
+                $data = Live_Event::latest();
                 if ($input_search != null && isset($input_search)) {
                     $data->where('title', 'LIKE', "%{$input_search}%");
                 }
@@ -154,7 +154,7 @@ class VideoController extends Controller
     public function update(Request $request)
     {
         try {
-            $video = Live_Event::where('id', $request->id)->where('is_vod', 1)->first();
+            $video = Live_Event::where('id', $request->id)->first();
             if (!isset($video)) {
                 return response()->json(array('status' => 400, 'errors' => __('Label.data_not_updated')));
             }
@@ -194,7 +194,7 @@ class VideoController extends Controller
     public function destroy($id)
     {
         try {
-            $data = Live_Event::where('id', $id)->where('is_vod', 1)->first();
+            $data = Live_Event::where('id', $id)->first();
 
             if (isset($data)) {
                 $this->common->deleteImageToFolder($this->folder, $data['portrait_img']);
@@ -305,7 +305,6 @@ class VideoController extends Controller
             'title' => $request->title,
             'description' => $request->description ?? '',
             'category_id' => $request->category_id,
-            'is_vod' => 1,
             'type' => 2,
             'video_source' => $request->video_source,
             'video_series_id' => $request->video_series_id ?: null,

@@ -106,7 +106,7 @@ class VideoCategoryController extends Controller
     {
         try {
             // Videos keep working without a category rather than pointing at a deleted one.
-            Live_Event::where('is_vod', 1)->where('category_id', $id)->update(['category_id' => null]);
+            Live_Event::where('category_id', $id)->update(['category_id' => null]);
             Video_Category::where('id', $id)->delete();
             return redirect()->route('videocategory.index')->with('success', __('Label.data_delete_successfully'));
         } catch (Exception $e) {

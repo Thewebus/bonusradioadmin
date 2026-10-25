@@ -1266,7 +1266,7 @@ class HomeController extends Controller
     {
         $today = date('Y-m-d');
 
-        $latestEpisodeIds = Live_Event::where('is_vod', 1)
+        $latestEpisodeIds = Live_Event::query()
             ->where('status', 1)
             ->where('date', '>=', $today)
             ->whereNotNull('video_series_id')
@@ -1280,7 +1280,6 @@ class HomeController extends Controller
                 DB::raw('COALESCE(vs.category_id, tbl_live_event.category_id) as catalog_category_id'),
                 DB::raw($this->videoCatalogViewsSql() . ' as catalog_views')
             )
-            ->where('tbl_live_event.is_vod', 1)
             ->where('tbl_live_event.status', 1)
             ->where('tbl_live_event.date', '>=', $today)
             ->where(function ($q) use ($latestEpisodeIds) {
@@ -1308,7 +1307,7 @@ class HomeController extends Controller
         $this->common->imageNameToUrl($rows, 'landscape_img', $this->folder_live_event);
 
         $category_names = Video_Category::pluck('name', 'id');
-        $episode_counts = Live_Event::where('is_vod', 1)
+        $episode_counts = Live_Event::query()
             ->whereNotNull('video_series_id')
             ->where('status', 1)
             ->selectRaw('video_series_id, count(*) as total')
@@ -1417,7 +1416,7 @@ class HomeController extends Controller
                 $this->common->imageNameToUrl($data, 'landscape_img', $this->folder_video_series);
 
                 $category_names = Video_Category::pluck('name', 'id');
-                $episode_counts = Live_Event::where('is_vod', 1)
+                $episode_counts = Live_Event::query()
                     ->whereNotNull('video_series_id')
                     ->where('status', 1)
                     ->selectRaw('video_series_id, count(*) as total')
@@ -1487,7 +1486,7 @@ class HomeController extends Controller
             $this->common->imageNameToUrl([$series], 'landscape_img', $this->folder_video_series);
             $series['category_name'] = Video_Category::where('id', $series['category_id'])->value('name') ?? '';
 
-            $episodes = Live_Event::where('is_vod', 1)
+            $episodes = Live_Event::query()
                 ->where('status', 1)
                 ->where('video_series_id', $series->id)
                 ->orderBy('episode_number', 'DESC')

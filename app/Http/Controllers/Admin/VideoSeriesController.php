@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Common;
 use App\Models\Live_Event;
-use App\Models\Video_Category;
+use App\Models\Category;
 use App\Models\Video_Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -25,7 +25,7 @@ class VideoSeriesController extends Controller
     {
         try {
             $params['data'] = [];
-            $params['categories'] = Video_Category::where('status', 1)->orderBy('name')->get();
+            $params['categories'] = Category::where('status', 1)->orderBy('name')->get();
 
             if ($request->ajax()) {
                 $input_search = $request['input_search'];

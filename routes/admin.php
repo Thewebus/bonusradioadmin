@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Admin\AdmobSettingController;
 use App\Http\Controllers\Admin\AdsPremiumController;
 use App\Http\Controllers\Admin\VideoController;
-use App\Http\Controllers\Admin\VideoCategoryController;
 use App\Http\Controllers\Admin\VideoSeriesController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\ArtistController;
@@ -128,7 +127,8 @@ Route::group(['middleware' => 'installation'], function () {
         // Videos (video on demand)
         Route::resource('video', VideoController::class)->only(['index']);
         Route::post('video/saveChunk', [VideoController::class, 'saveChunk'])->name('video.savechunk');
-        Route::resource('videocategory', VideoCategoryController::class)->only(['index']);
+        // Video categories were merged into the general categories.
+        Route::get('videocategory', fn () => redirect()->route('category.index'))->name('videocategory.index');
         Route::resource('videoseries', VideoSeriesController::class)->only(['index']);
         // Comment
         Route::resource('comment', CommentController::class)->only(['index', 'show']);
@@ -190,7 +190,6 @@ Route::group(['middleware' => 'installation'], function () {
             Route::resource('adspremium', AdsPremiumController::class)->only(['store', 'update', 'destroy']);
             // Videos (video on demand)
             Route::resource('video', VideoController::class)->only(['store', 'update', 'destroy']);
-            Route::resource('videocategory', VideoCategoryController::class)->only(['store', 'update', 'destroy']);
             Route::resource('videoseries', VideoSeriesController::class)->only(['store', 'update', 'destroy']);
             // Package
             Route::resource('package', PackageController::class)->only(['store', 'update', 'destroy']);

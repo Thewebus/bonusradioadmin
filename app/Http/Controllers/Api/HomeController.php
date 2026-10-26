@@ -31,7 +31,6 @@ use App\Models\Section;
 use App\Models\Social_Link;
 use App\Models\User;
 use App\Models\User_Notification_Tracking;
-use App\Models\Video_Category;
 use App\Models\Video_Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -1288,11 +1287,83 @@ class HomeController extends Controller
             return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
         }
     }
+    // Per category: active songs, active podcasts, and video catalog entries
+    // (standalone videos + series, a series counting once).
+    private function categoryContentCounts($categoryIds)
+    {
+        $songs = Song::whereIn('category_id', $categoryIds)->where('status', 1)
+            ->selectRaw('category_id, count(*) as total')->groupBy('category_id')
+            ->pluck('total', 'category_id');
+        $podcasts = Podcast::whereIn('category_id', $categoryIds)->where('status', 1)
+            ->selectRaw('category_id, count(*) as total')->groupBy('category_id')
+            ->pluck('total', 'category_id');
+        $videos = $this->videoCatalogQuery()
+            ->whereIn(DB::raw('COALESCE(vs.category_id, tbl_live_event.category_id)'), collect($categoryIds)->map(fn ($id) => (int) $id)->all())
+            ->select(DB::raw('COALESCE(vs.category_id, tbl_live_event.category_id) as cid, count(*) as total'))
+            ->groupBy(DB::raw('COALESCE(vs.category_id, tbl_live_event.category_id)'))
+            ->pluck('total', 'cid');
+        return ['songs' => $songs, 'podcasts' => $podcasts, 'videos' => $videos];
+    }
+    // A rubrique's page: everything filed under one category — songs,
+    // podcasts, and videos/series (catalog entries) — each list in the same
+    // shape as the home sections, so the app reuses its existing tiles and
+    // playback. Params: category_id, user_id.
+    public function get_category_content(Request $request)
+    {
+        try {
+            $validation = Validator::make(
+                $request->all(),
+                ['category_id' => 'required|numeric'],
+                ['category_id.required' => __('api_msg.category_id_is_required')]
+            );
+            if ($validation->fails()) {
+                return $this->common->API_Response(400, $validation->errors()->first());
+            }
+
+            $category = Category::where('id', $request->category_id)->where('status', 1)->first();
+            if (!$category) {
+                return $this->common->API_Response(400, __('api_msg.data_not_found'));
+            }
+            $this->common->imageNameToUrl([$category], 'image', $this->folder_category);
+
+            $user_id = isset($request->user_id) ? $request->user_id : 0;
+            $limit = 30;
+
+            // upload desc, no play ordering, premium + free
+            $songs = $this->common->section_query($user_id, 1, 0, $category->id, 0, 0, 1, 2, 2, $limit);
+            $podcasts = $this->common->section_query($user_id, 2, 0, $category->id, 0, 0, 1, 2, 2, $limit);
+            $videos = $this->videoCatalogQuery()
+                ->whereRaw('COALESCE(vs.category_id, tbl_live_event.category_id) = ?', [$category->id])
+                ->orderBy('tbl_live_event.id', 'desc')
+                ->take($limit)
+                ->get();
+            $this->enrichVideoCatalogRows($videos, $user_id);
+
+            $counts = $this->categoryContentCounts([$category->id]);
+            $data = $category->toArray();
+            $data['song_count'] = $counts['songs'][$category->id] ?? 0;
+            $data['podcast_count'] = $counts['podcasts'][$category->id] ?? 0;
+            $data['video_count'] = $counts['videos'][$category->id] ?? 0;
+            $data['songs'] = $songs;
+            $data['podcasts'] = $podcasts;
+            $data['videos'] = $videos;
+
+            return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data);
+        } catch (Exception $e) {
+            return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
+        }
+    }
+    // Category pills of the Films screen: the (shared) categories that have
+    // at least one video or series in the catalog.
     public function get_video_category(Request $request)
     {
         try {
 
-            $data = Video_Category::where('status', 1)->orderBy('name', 'ASC')->get();
+            $withVideos = $this->videoCatalogQuery()
+                ->select(DB::raw('DISTINCT COALESCE(vs.category_id, tbl_live_event.category_id) as cid'))
+                ->pluck('cid')
+                ->filter();
+            $data = Category::where('status', 1)->whereIn('id', $withVideos)->orderBy('name', 'ASC')->get();
 
             if (count($data) > 0) {
                 return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $data);
@@ -1352,7 +1423,7 @@ class HomeController extends Controller
         $this->common->imageNameToUrl($rows, 'portrait_img', $this->folder_live_event);
         $this->common->imageNameToUrl($rows, 'landscape_img', $this->folder_live_event);
 
-        $category_names = Video_Category::pluck('name', 'id');
+        $category_names = Category::pluck('name', 'id');
         $episode_counts = Live_Event::query()
             ->whereNotNull('video_series_id')
             ->where('status', 1)
@@ -1461,7 +1532,7 @@ class HomeController extends Controller
                 $this->common->imageNameToUrl($data, 'portrait_img', $this->folder_video_series);
                 $this->common->imageNameToUrl($data, 'landscape_img', $this->folder_video_series);
 
-                $category_names = Video_Category::pluck('name', 'id');
+                $category_names = Category::pluck('name', 'id');
                 $episode_counts = Live_Event::query()
                     ->whereNotNull('video_series_id')
                     ->where('status', 1)
@@ -1530,7 +1601,7 @@ class HomeController extends Controller
 
             $this->common->imageNameToUrl([$series], 'portrait_img', $this->folder_video_series);
             $this->common->imageNameToUrl([$series], 'landscape_img', $this->folder_video_series);
-            $series['category_name'] = Video_Category::where('id', $series['category_id'])->value('name') ?? '';
+            $series['category_name'] = Category::where('id', $series['category_id'])->value('name') ?? '';
 
             $episodes = Live_Event::query()
                 ->where('status', 1)
@@ -1542,7 +1613,7 @@ class HomeController extends Controller
             $this->common->imageNameToUrl($episodes, 'portrait_img', $this->folder_live_event);
             $this->common->imageNameToUrl($episodes, 'landscape_img', $this->folder_live_event);
 
-            $category_names = Video_Category::pluck('name', 'id');
+            $category_names = Category::pluck('name', 'id');
             for ($i = 0; $i < count($episodes); $i++) {
                 if ($episodes[$i]['video_source'] == 2) {
                     $episodes[$i]['link'] = config('app.image_url') . 'video/' . $episodes[$i]['link'];
@@ -1669,14 +1740,11 @@ class HomeController extends Controller
                         $data[$i]['data'] = $content->take($data[$i]['no_of_content'])->get();
                         $this->common->imageNameToUrl($data[$i]['data'], 'image', $this->folder_category);
 
-                        $category_ids = $data[$i]['data']->pluck('id');
-                        $song_counts = Song::whereIn('category_id', $category_ids)
-                            ->where('status', 1)
-                            ->selectRaw('category_id, count(*) as total')
-                            ->groupBy('category_id')
-                            ->pluck('total', 'category_id');
+                        $counts = $this->categoryContentCounts($data[$i]['data']->pluck('id'));
                         foreach ($data[$i]['data'] as $category) {
-                            $category['song_count'] = $song_counts[$category['id']] ?? 0;
+                            $category['song_count'] = $counts['songs'][$category['id']] ?? 0;
+                            $category['podcast_count'] = $counts['podcasts'][$category['id']] ?? 0;
+                            $category['video_count'] = $counts['videos'][$category['id']] ?? 0;
                         }
                     } else if ($data[$i]['type'] == 6) {
 

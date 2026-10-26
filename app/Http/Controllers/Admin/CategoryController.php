@@ -7,6 +7,8 @@ use App\Models\Category;
 use App\Models\Common;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Live_Event;
+use App\Models\Video_Series;
 use Exception;
 
 class CategoryController extends Controller
@@ -125,6 +127,10 @@ class CategoryController extends Controller
             if (isset($data)) {
                 $this->common->deleteImageToFolder($this->folder, $data['image']);
                 $data->delete();
+                // Videos and series filed under it become uncategorized
+                // (categories are shared with videos since the merge).
+                Live_Event::where('category_id', $id)->update(['category_id' => null]);
+                Video_Series::where('category_id', $id)->update(['category_id' => null]);
             }
             return redirect()->route('category.index')->with('success', __('Label.data_delete_successfully'));
         } catch (Exception $e) {

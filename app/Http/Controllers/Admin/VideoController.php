@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Common;
 use App\Models\Live_Event;
-use App\Models\Video_Category;
+use App\Models\Category;
 use App\Models\Video_Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -34,7 +34,7 @@ class VideoController extends Controller
     {
         try {
             $params['data'] = [];
-            $params['categories'] = Video_Category::where('status', 1)->orderBy('name')->get();
+            $params['categories'] = Category::where('status', 1)->orderBy('name')->get();
             $params['series'] = Video_Series::where('status', 1)->orderBy('title')->get();
             // Present when arriving from a series row's "Episodes" link — pre-filters
             // the table and pre-selects that series in the add form.
@@ -52,7 +52,7 @@ class VideoController extends Controller
                 }
                 $data = $data->get();
 
-                $category_names = Video_Category::pluck('name', 'id');
+                $category_names = Category::pluck('name', 'id');
                 $series_titles = Video_Series::pluck('title', 'id');
 
                 $this->common->imageNameToUrl($data, 'portrait_img', $this->folder);

@@ -8,7 +8,6 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\Language;
 use App\Models\Section;
-use App\Models\Video_Category;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Auth\Events\Validated;
@@ -27,7 +26,7 @@ class SectionController extends Controller
             $params['city'] = City::latest()->get();
             // Video sections filter by tbl_video_category, a separate table
             // from the radio-content tbl_category above — never mix the two.
-            $params['video_category'] = Video_Category::where('status', 1)->latest()->get();
+            $params['video_category'] = Category::where('status', 1)->latest()->get();
 
             return view('admin.section.index', $params);
         } catch (Exception $e) {

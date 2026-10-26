@@ -100,12 +100,6 @@
                 <span>{{ __('Label.videos_vod') }}</span>
             </a>
         </li>
-        <li class="side_line {{ request()->routeIs('videocategory*') ? 'active' : '' }}">
-            <a href="{{ route('videocategory.index') }}">
-                <i class="fa-solid fa-tags fa-2xl menu-icon"></i>
-                <span>{{ __('Label.video_categories') }}</span>
-            </a>
-        </li>
         <li class="side_line {{ request()->routeIs('videoseries*') ? 'active' : '' }}">
             <a href="{{ route('videoseries.index') }}">
                 <i class="fa-solid fa-layer-group fa-2xl menu-icon"></i>

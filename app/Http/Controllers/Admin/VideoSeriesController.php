@@ -170,7 +170,7 @@ class VideoSeriesController extends Controller
         return [
             'title' => 'required|min:2|max:255',
             'description' => 'nullable|string',
-            'category_id' => 'nullable|exists:tbl_video_category,id',
+            'category_id' => 'nullable|exists:tbl_category,id',
             'status' => 'required|in:0,1',
             'portrait_img' => ($is_store ? 'required|' : '') . 'image|mimes:jpeg,png,jpg|max:2048',
             'landscape_img' => ($is_store ? 'required|' : '') . 'image|mimes:jpeg,png,jpg|max:2048',

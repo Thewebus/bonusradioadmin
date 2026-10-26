@@ -278,7 +278,7 @@ class VideoController extends Controller
     {
         $rules = [
             'title' => 'required|min:2|max:255',
-            'category_id' => 'required|exists:tbl_video_category,id',
+            'category_id' => 'required|exists:tbl_category,id',
             'video_source' => 'required|in:1,2',
             'video_series_id' => 'nullable|exists:tbl_video_series,id',
             'episode_number' => 'nullable|integer|min:1',

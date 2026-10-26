@@ -100,6 +100,7 @@ Route::group(['middleware' => 'installation'], function () {
         // Banner
         Route::resource('banner', BannerController::class)->only(['index', 'store', 'show']);
         Route::get('getcontent', [BannerController::class, 'getcontent'])->name('getcontent');
+        Route::post('banner/sort', [BannerController::class, 'sort'])->name('banner.sort');
         // Podcast Section
         Route::resource('podcastsection', PodcastSectionController::class)->only(['index', 'store', 'show', 'update']);
         Route::post('podcastsection/content', [PodcastSectionController::class, 'GetSectionData'])->name('podcastsection.data');

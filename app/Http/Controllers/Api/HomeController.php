@@ -1948,7 +1948,7 @@ class HomeController extends Controller
 
             $user_id = isset($request->user_id) ? $request->user_id : 0;
 
-            $data = Banner::with('song', 'podcast')->orderBy('id', 'desc');
+            $data = Banner::with('song', 'podcast')->orderBy('sort_order')->orderBy('id', 'desc');
 
             $total_rows = $data->count();
             $total_page = $this->page_limit;
@@ -1990,12 +1990,43 @@ class HomeController extends Controller
 
                             $result[] = $item['podcast'];
                         }
+                    } elseif ($item['type'] == 3 || $item['type'] == 4) {
+                        // Video/series banner: the catalog row (same shape as
+                        // get_video) under "video", so the app opens it like
+                        // a Films tile; the series uses its own artwork.
+                        $row = $this->videoCatalogQuery();
+                        $item['type'] == 3
+                            ? $row->where('tbl_live_event.id', $item['content_id'])->whereNull('tbl_live_event.video_series_id')
+                            : $row->where('tbl_live_event.video_series_id', $item['content_id']);
+                        $rows = $row->get();
+                        if (count($rows) > 0) {
+                            $this->enrichVideoCatalogRows($rows, $user_id);
+                            $video = $rows[0];
+                            $banner = [
+                                'id' => $item['content_id'],
+                                'title' => $video['title'],
+                                'portrait_img' => $video['portrait_img'],
+                                'landscape_img' => $video['landscape_img'],
+                                'description' => $video['description'],
+                                'category_name' => $video['category_name'],
+                                'type' => $item['type'],
+                                'video' => $video,
+                            ];
+                            if ($item['type'] == 4) {
+                                $series = Video_Series::find($item['content_id']);
+                                $banner['description'] = $series->description ?? '';
+                                $banner['portrait_img'] = $this->common->Get_Image($this->folder_video_series, $series->portrait_img);
+                                $banner['landscape_img'] = $this->common->Get_Image($this->folder_video_series, $series->landscape_img);
+                            }
+                            $result[] = $banner;
+                        }
                     }
                     unset($item['song'], $item['podcast']);
                 }
 
                 if (count($result) > 0) {
-                    $this->common->getAllIdByName($result);
+                    // Song/podcast models only — video banners are already complete arrays.
+                    $this->common->getAllIdByName(array_filter($result, fn($r) => !is_array($r)));
                     return $this->common->API_Response(200, __('api_msg.get_record_successfully'), $result, $pagination);
                 } else {
                     return $this->common->API_Response(400, __('api_msg.data_not_found'));

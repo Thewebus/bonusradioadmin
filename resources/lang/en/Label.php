@@ -611,4 +611,8 @@ return [
     'thumbnail_loading_hint' => "What a thumbnail shows until its image has loaded.",
     'title_font_weight_hint' => "Serif headline font in the app (section titles, greetings…).",
     'ads_total' => "Total",
+    'banner_video' => "Video (film)",
+    'banner_series' => "Series",
+    'banner_order_saved' => "Banner order saved",
+    'banner_order_hint' => "Banners are shown in the app in this order — use the arrows to move them.",
 ];

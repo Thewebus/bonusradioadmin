@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Common;
+use App\Models\Live_Event;
+use App\Models\Video_Series;
 use App\Models\Podcast;
 use App\Models\Song;
 use Illuminate\Http\Request;
@@ -16,6 +18,8 @@ class BannerController extends Controller
 {
     private $folder_song = "song";
     private $folder_podcast = "podcast";
+    private $folder_live_event = "live_event";
+    private $folder_video_series = "video_series";
     public $common;
     public function __construct()
     {
@@ -28,7 +32,7 @@ class BannerController extends Controller
             $params['data'] = [];
 
             if ($request->ajax()) {
-                $data = Banner::with('song', 'podcast')->latest()->get()->toArray();
+                $data = Banner::with('song', 'podcast', 'video', 'series')->orderBy('sort_order')->orderBy('id', 'desc')->get()->toArray();
 
                 $result = [];
                 foreach ($data as $key => $value) {
@@ -49,7 +53,18 @@ class BannerController extends Controller
                         $value['type'] =  'Radio Station';
                         unset($value['podcast'], $value['song']);
                         $result[] = $value;
+                    } elseif ($value['type'] == 3 && $value['video'] != null) {
+                        $value['image'] = $this->common->Get_Image($this->folder_live_event, $value['video']['portrait_img']);
+                        $value['title'] = $value['video']['title'];
+                        $value['type'] = __('Label.banner_video');
+                        $result[] = $value;
+                    } elseif ($value['type'] == 4 && $value['series'] != null) {
+                        $value['image'] = $this->common->Get_Image($this->folder_video_series, $value['series']['portrait_img']);
+                        $value['title'] = $value['series']['title'];
+                        $value['type'] = __('Label.banner_series');
+                        $result[] = $value;
                     }
+                    unset($value['video'], $value['series']);
                 }
 
                 return response()->json(array('status' => 200, 'success' => __('Label.Data Add Successfully'), 'result' => $result));
@@ -80,6 +95,8 @@ class BannerController extends Controller
             $insert = new Banner();
             $insert->content_id = $request->content_id;
             $insert->type = $request->type;
+            // New banners go last; the order is changed from the list.
+            $insert->sort_order = (Banner::max('sort_order') ?? 0) + 1;
 
             if ($insert->save()) {
                 return response()->json(array('status' => 200, 'success' => __('Label.banner_add_successfully')));
@@ -111,8 +128,30 @@ class BannerController extends Controller
                 $content = Song::where('status', 1)->get();
             } elseif ($content_type == 2) {
                 $content = Podcast::where('status', 1)->get();
+            } elseif ($content_type == 3) {
+                // Standalone videos only — an episode is promoted through its series.
+                $content = Live_Event::where('status', 1)->whereNull('video_series_id')->orderBy('title')->get(['id', 'title']);
+            } elseif ($content_type == 4) {
+                $content = Video_Series::where('status', 1)->orderBy('title')->get(['id', 'title']);
             }
             return response()->json(array('status' => 200, 'success' => __('Label.Data Add Successfully'), 'content' => $content));
+        } catch (Exception $e) {
+            return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
+        }
+    }
+
+    // Saves the display order: "ids" = banner ids, first shown first.
+    public function sort(Request $request)
+    {
+        try {
+            $ids = $request->input('ids', []);
+            if (!is_array($ids)) {
+                return response()->json(array('status' => 400, 'errors' => 'Invalid order'));
+            }
+            foreach (array_values($ids) as $i => $id) {
+                Banner::where('id', (int) $id)->update(['sort_order' => $i + 1]);
+            }
+            return response()->json(array('status' => 200, 'success' => __('Label.banner_order_saved')));
         } catch (Exception $e) {
             return response()->json(array('status' => 400, 'errors' => $e->getMessage()));
         }

@@ -38,6 +38,8 @@
                                                 <option value="0">{{__('Label.select_type')}}</option>
                                                 <option value="1">{{__('Label.radio_station')}}</option>
                                                 <option value="2">{{__('Label.poadcast')}}</option>
+                                                <option value="3">{{__('Label.banner_video')}}</option>
+                                                <option value="4">{{__('Label.banner_series')}}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -50,6 +52,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <p class="text-muted mb-3">{{__('Label.banner_order_hint')}}</p>
                                 <div class="after-add-more"></div>
 
                             </form>
@@ -86,7 +89,7 @@
                     response.content.forEach(function(item) {
                         if(contentType == 1){
                             $('#content_id').append(`<option value="${item.id}">${item.name}</option>`);
-                        } else if(contentType == 2){
+                        } else if(contentType == 2 || contentType == 3 || contentType == 4){
                             $('#content_id').append(`<option value="${item.id}">${item.title}</option>`);
                         }
                     });
@@ -107,15 +110,19 @@
             success: function(resp) {
 
                 for (var i = 0; i < resp.result.length; i++) {
-                    var data = '<div class="form-group row">';
+                    var data = '<div class="form-group row banner-row" data-id="' + resp.result[i].id + '">';
                     data += '<div class="col-md-2  mb-0">';
                     data += '<input type="text" class="form-control" name="type" value="' + resp.result[i].type + '" id="type" placeholder="Dropdown" readonly/>';
                     data += '</div>';
-                    data += '<div class="col-md-6  mb-0">';
+                    data += '<div class="col-md-5  mb-0">';
                     data += '<input type="text" class="form-control" name="title" value="' + resp.result[i].title + '" id="title" placeholder="Dropdown" readonly/>';
                     data += '</div>';
                     data += '<div class="col-md-1 ml-5">';
                     data += '<img src="' + resp.result[i].image + '" height=50 Width=50>';
+                    data += '</div>';
+                    data += '<div class="col-md-1 mb-0">';
+                    data += '<a onclick="MoveBanner(this, -1)" class="btn btn-default mb-0" title="Up"><i class="fa-solid fa-arrow-up"></i></a> ';
+                    data += '<a onclick="MoveBanner(this, 1)" class="btn btn-default mb-0" title="Down"><i class="fa-solid fa-arrow-down"></i></a>';
                     data += '</div>';
                     data += '<div class="col-md-1 change ">';
                     data += '<label>&nbsp;</label>';
@@ -165,6 +172,29 @@
         });
 
         // Delete Banner
+        // Moves a banner row up (-1) or down (1) and saves the new order.
+        function MoveBanner(btn, dir) {
+            var row = $(btn).closest('.banner-row');
+            var other = dir < 0 ? row.prev('.banner-row') : row.next('.banner-row');
+            if (!other.length) return;
+            dir < 0 ? row.insertBefore(other) : row.insertAfter(other);
+            var ids = $('.banner-row').map(function() { return $(this).data('id'); }).get();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: '{{ route("banner.sort") }}',
+                data: { ids: ids },
+                success: function(resp) {
+                    resp.status == 200 ? toastr.success(resp.success) : toastr.error(resp.errors);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    toastr.error(errorThrown, textStatus);
+                }
+            });
+        }
+
         function DeleteBanner(id) {
 
             if(confirm('Are you sure !!! You want to Delete this Banner ?')) {

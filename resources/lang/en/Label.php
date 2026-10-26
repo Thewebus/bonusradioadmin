@@ -603,6 +603,12 @@ return [
     'ads_uniques_hint' => "Impressions = each time a poster is shown. Unique users = distinct phones that saw it (counted once over the whole period).",
     'category_compact' => "Category (compact chips)",
     'title_font_weight' => "Title font weight",
+    'show_radio_metadata' => "Live radio info (AzuraCast)",
+    'show_radio_metadata_hint' => "Song playing now, its cover and the listener count on the Radios screen and mini-player.",
+    'thumbnail_loading' => "Thumbnail while loading",
+    'thumbnail_loading_shimmer' => "Animated effect",
+    'thumbnail_loading_image' => "Logo image",
+    'thumbnail_loading_hint' => "What a thumbnail shows until its image has loaded.",
     'title_font_weight_hint' => "Serif headline font in the app (section titles, greetings…).",
     'ads_total' => "Total",
 ];

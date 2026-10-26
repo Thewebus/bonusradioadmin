@@ -96,6 +96,24 @@
                                                 </select>
                                                 <small class="text-gray">{{__('Label.title_font_weight_hint')}}</small>
                                             </div>
+                                            <div class="form-group col-md-4">
+                                                <label>{{__('Label.show_radio_metadata')}}</label>
+                                                @php $radioMeta = $result['show_radio_metadata'] ?? '1'; @endphp
+                                                <select name="show_radio_metadata" class="form-control">
+                                                    <option value="1" {{ $radioMeta == '1' ? 'selected' : '' }}>{{__('Label.yes')}}</option>
+                                                    <option value="0" {{ $radioMeta == '0' ? 'selected' : '' }}>{{__('Label.no')}}</option>
+                                                </select>
+                                                <small class="text-gray">{{__('Label.show_radio_metadata_hint')}}</small>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label>{{__('Label.thumbnail_loading')}}</label>
+                                                @php $thumbLoading = $result['thumbnail_loading'] ?? 'shimmer'; @endphp
+                                                <select name="thumbnail_loading" class="form-control">
+                                                    <option value="shimmer" {{ $thumbLoading == 'shimmer' ? 'selected' : '' }}>{{__('Label.thumbnail_loading_shimmer')}}</option>
+                                                    <option value="image" {{ $thumbLoading == 'image' ? 'selected' : '' }}>{{__('Label.thumbnail_loading_image')}}</option>
+                                                </select>
+                                                <small class="text-gray">{{__('Label.thumbnail_loading_hint')}}</small>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">

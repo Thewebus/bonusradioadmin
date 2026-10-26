@@ -1772,26 +1772,21 @@ class HomeController extends Controller
                         $this->common->imageNameToUrl($data[$i]['data'], 'image', $this->folder_city);
                     } else if ($data[$i]['type'] == 8) {
 
-                        // Home preview: one tile per video category — each
-                        // category's single most recent catalog entry (a
-                        // standalone video, or a series via its latest
-                        // episode) — same catalog as the Films screen.
+                        // Home preview: the N most recent catalog entries
+                        // (standalone videos, and series via their latest
+                        // episode), all categories — same catalog as the
+                        // Films screen; N = the section's no_of_content.
                         // category_id/order_by_upload are intentionally
                         // not used as filters here.
-                        $base = $this->videoCatalogQuery()->whereRaw('COALESCE(vs.category_id, tbl_live_event.category_id) IS NOT NULL');
+                        $content = $this->videoCatalogQuery();
 
                         if ($data[$i]['is_paid'] == 0) {
-                            $base->where('tbl_live_event.is_paid', 0);
+                            $content->where('tbl_live_event.is_paid', 0);
                         } else if ($data[$i]['is_paid'] == 1) {
-                            $base->where('tbl_live_event.is_paid', 1);
+                            $content->where('tbl_live_event.is_paid', 1);
                         }
 
-                        $latestIdPerCategory = (clone $base)
-                            ->select(DB::raw('MAX(tbl_live_event.id) as id'))
-                            ->groupBy(DB::raw('COALESCE(vs.category_id, tbl_live_event.category_id)'))
-                            ->pluck('id');
-                        $query = $this->videoCatalogQuery()
-                            ->whereIn('tbl_live_event.id', $latestIdPerCategory)
+                        $query = $content
                             ->orderBy('tbl_live_event.id', 'desc')
                             ->take($data[$i]['no_of_content'])
                             ->get();

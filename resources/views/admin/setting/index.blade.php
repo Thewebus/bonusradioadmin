@@ -114,6 +114,25 @@
                                                 </select>
                                                 <small class="text-gray">{{__('Label.thumbnail_loading_hint')}}</small>
                                             </div>
+                                            <div class="form-group col-md-4">
+                                                <label>{{__('Label.mobile_data_warning')}}</label>
+                                                @php $dataWarning = $result['mobile_data_warning'] ?? '1'; @endphp
+                                                <select name="mobile_data_warning" class="form-control">
+                                                    <option value="1" {{ $dataWarning == '1' ? 'selected' : '' }}>{{__('Label.yes')}}</option>
+                                                    <option value="0" {{ $dataWarning == '0' ? 'selected' : '' }}>{{__('Label.no')}}</option>
+                                                </select>
+                                                <small class="text-gray">{{__('Label.mobile_data_warning_hint')}}</small>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label>{{__('Label.mobile_data_warning_mb')}}</label>
+                                                <input type="number" min="1" name="mobile_data_warning_mb" class="form-control" value="{{ $result['mobile_data_warning_mb'] ?? '100' }}">
+                                                <small class="text-gray">{{__('Label.mobile_data_warning_mb_hint')}}</small>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label>{{__('Label.mobile_data_warning_interval')}}</label>
+                                                <input type="number" min="1" name="mobile_data_warning_interval" class="form-control" value="{{ $result['mobile_data_warning_interval'] ?? '30' }}">
+                                                <small class="text-gray">{{__('Label.mobile_data_warning_interval_hint')}}</small>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">

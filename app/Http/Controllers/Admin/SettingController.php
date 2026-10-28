@@ -62,6 +62,8 @@ class SettingController extends Controller
                 $data["contact"] = isset($data['contact']) ? $data['contact'] : '';
                 $data["app_desripation"] = isset($data['app_desripation']) ? $data['app_desripation'] : '';
                 $data["website"] = isset($data['website']) ? $data['website'] : '';
+                $data["play_store_url"] = isset($data['play_store_url']) ? $data['play_store_url'] : '';
+                $data["app_store_url"] = isset($data['app_store_url']) ? $data['app_store_url'] : '';
 
                 if (isset($data['app_logo'])) {
                     $files = $data['app_logo'];

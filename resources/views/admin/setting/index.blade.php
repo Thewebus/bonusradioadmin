@@ -133,6 +133,16 @@
                                                 <input type="number" min="1" name="mobile_data_warning_interval" class="form-control" value="{{ $result['mobile_data_warning_interval'] ?? '30' }}">
                                                 <small class="text-gray">{{__('Label.mobile_data_warning_interval_hint')}}</small>
                                             </div>
+                                            <div class="form-group col-md-6">
+                                                <label>{{__('Label.play_store_url')}}</label>
+                                                <input type="url" name="play_store_url" class="form-control" placeholder="https://play.google.com/store/apps/details?id=..." value="{{ $result['play_store_url'] ?? '' }}">
+                                                <small class="text-gray">{{__('Label.store_url_hint')}}</small>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>{{__('Label.app_store_url')}}</label>
+                                                <input type="url" name="app_store_url" class="form-control" placeholder="https://apps.apple.com/app/id..." value="{{ $result['app_store_url'] ?? '' }}">
+                                                <small class="text-gray">{{__('Label.store_url_hint')}}</small>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">

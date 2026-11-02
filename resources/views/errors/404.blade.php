@@ -29,13 +29,13 @@
             font-weight: 300;
         }
         .message-box h1 {
-        color:#4e45b8;
+        color:#ff452d;
         font-size: 200px;
         line-height: 50px;
         margin-bottom: 40px;
         }
         .message-box p {
-        color:#4e45b8;
+        color:#ff452d;
         font-size: 50px;
         line-height: 50px;
         margin-bottom: 40px;
@@ -64,7 +64,7 @@
             animation-delay: .8s;
         }
         .btn-default {
-            background: #4e45b8;
+            background: #ff452d;
             border-radius: 50px;
             font-size: 18px;
             font-weight: 600;
@@ -78,9 +78,9 @@
             word-spacing: 5px;
         }
         .btn-default:hover {
-            color: #4e45b8;
+            color: #ff452d;
             background: transparent;
-            border-color: #4e45b8;
+            border-color: #ff452d;
         }
         @keyframes float {
             100% {

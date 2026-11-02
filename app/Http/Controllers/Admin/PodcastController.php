@@ -67,7 +67,7 @@ class PodcastController extends Controller
                         }
                     })
                     ->addColumn('episode', function ($row) {
-                        $btn = '<a href="' . route('podcast.episode.index', $row->id) . '" class="btn text-white p-1 font-weight-bold" style="background:#4e45b8;"> Episode List</a> ';
+                        $btn = '<a href="' . route('podcast.episode.index', $row->id) . '" class="btn text-white p-1 font-weight-bold" style="background:var(--primary-color);"> Episode List</a> ';
                         return $btn;
                     })
                     ->rawColumns(['action', 'episode', 'status'])

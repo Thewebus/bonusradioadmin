@@ -5,33 +5,16 @@
         <div class="h-100 no-gutters row">
             <div class="d-none d-lg-block h-100 col-lg-5 col-xl-4">
                 <div class="left-caption">
-                    <img src="{{asset('assets/imgs/login.jpg')}}" class="bg-img"/>
-                    <div class="caption">
-                        <div>
-                            <!-- logo -->
-                            <h1 style="font-size: 60px; font-weight: bold;">{{App_Name()}}</h1>
-
-                            <?php $setting = Setting_Data();?>
-                            <p class="text">
-                                {{String_Cut($setting['app_desripation'], 200)}}
-                            </p>
-                        </div>
-                    </div>
+                    <img src="{{ asset('assets/imgs/mybonus_logo.png') }}" alt="{{ App_Name() }}" class="mb-login-logo">
                 </div>
             </div>
             <div class="h-100 d-flex login-bg justify-content-center align-items-lg-center col-md-12 col-lg-7 col-xl-8">
                 <div class="mx-auto col-sm-12 col-md-10 col-xl-8">
                     <div class="py-5">
-
-                        <div class="app-logo mb-4">
-                            <h1 class="primary-color mb-4 d-block d-lg-none">{{ App_Name() }}</h1>
-                            <h3 class="primary-color mb-0 font-weight-bold">Login</h3>
-                        </div>
-
-                        <h4 class="mb-0 font-weight-bold">
-                            <span class="d-block mb-2">Welcome back, Admin</span>
-                            <span>Please sign in to your account.</span>
-                        </h4>
+                        <div class="login-card">
+                        <img src="{{ asset('assets/imgs/mybonus_logo.png') }}" alt="{{ App_Name() }}" class="mb-login-logo-sm d-lg-none">
+                        <h1 class="login-title">Welcome back, Admin</h1>
+                        <p class="login-sub">Please sign in to your account.</p>
 
                         @php
                         $emailValue = Check_Admin_Access() == 0 ? 'admin@admin.com' : '';
@@ -66,6 +49,7 @@
                             </h6>
                             @endif
                         </form>
+                        </div>
                     </div>
                 </div>
             </div>

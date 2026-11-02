@@ -6,8 +6,8 @@
             <span></span>
         </button>
 
-        <a href="{{route('admin.dashboard')}}" class="side-logo primary-color">
-            <h3>{{ App_Name() }}</h3>
+        <a href="{{route('admin.dashboard')}}" class="side-logo">
+            <img src="{{ asset('assets/imgs/mybonus_logo.png') }}" alt="{{ App_Name() }}" class="mb-logo">
         </a>
  
         <h1 class="page-title">@yield('page_title')</h1>
@@ -19,6 +19,11 @@
                 <span>Demo Mode</span>
             </div>
         @endif
+
+        <!-- Theme -->
+        <button type="button" id="mb-theme-toggle" class="btn">
+            <i class="fa-solid fa-circle-half-stroke"></i>
+        </button>
 
         <!-- Setting -->
         <a href="{{ route('setting') }}" class="btn" title="Setting">

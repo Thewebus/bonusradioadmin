@@ -92,7 +92,7 @@
                 <div class="table-responsive table">
                     <table class="table table-striped text-center table-bordered">
                         <thead>
-                            <tr style="background: #F9FAFF;">
+                            <tr style="background: var(--mb-surface-2);">
                                 <th>{{ __('Label.nom_crea') }}</th>
                                 <th>{{ __('Label.Status') }}</th>
                                 <th>{{ __('Label.ads_views') }}</th>
@@ -139,7 +139,7 @@
                     <div class="table-responsive table">
                         <table class="table table-striped table-bordered">
                             <thead>
-                                <tr style="background: #F9FAFF;">
+                                <tr style="background: var(--mb-surface-2);">
                                     <th style="width: 130px;">{{ __('Label.ads_date') }}</th>
                                     <th style="width: 110px;" class="text-center">{{ __('Label.ads_views') }}</th>
                                     <th style="width: 130px;" class="text-center">{{ __('Label.ads_uniques') }}</th>

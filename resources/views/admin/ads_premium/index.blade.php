@@ -95,7 +95,7 @@
                 <div class="table-responsive table">
                     <table class="table table-striped text-center table-bordered" id="datatable">
                         <thead>
-                            <tr style="background: var(--mb-surface-2);">
+                            <tr style="background: #F9FAFF;">
                                 <th>{{ __('Label.#') }}</th>
                                 <th>{{ __('Label.ads_poster') }}</th>
                                 <th>{{ __('Label.nom_crea') }}</th>

@@ -111,7 +111,7 @@
                 <div class="table-responsive table">
                     <table class="table table-striped text-center table-bordered" id="datatable">
                         <thead>
-                            <tr style="background: var(--mb-surface-2);">
+                            <tr style="background: #F9FAFF;">
                                 <th>{{ __('Label.#') }}</th>
                                 <th>{{ __('Label.Image') }}</th>
                                 <th>{{ __('Label.Title') }}</th>

@@ -1,7 +1,7 @@
 <div class="sidebar">
     <div class="side-head">
-        <a href="{{route('admin.dashboard')}}" class="side-logo">
-            <img src="{{ asset('assets/imgs/mybonus_logo.png') }}" alt="{{ App_Name() }}" class="mb-logo">
+        <a href="{{route('admin.dashboard')}}" class="primary-color side-logo">
+            <h3>{{App_Name()}}</h3>
         </a>
         <button class="btn side-toggle">
             <span></span>

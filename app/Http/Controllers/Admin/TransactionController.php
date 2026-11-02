@@ -257,7 +257,7 @@ class TransactionController extends Controller
             $user = User::orWhere('full_name', 'like', '%' . $name . '%')->orWhere('mobile_number', 'like', '%' . $name . '%')->orWhere('email', 'like', '%' . $name . '%')->latest()->get();
 
             $url = url('admin/transaction/create?user_id');
-            $text = '<table width="100%" class="table table-striped category-table text-center table-bordered"><tr style="background: var(--mb-surface-2);"><th>Full Name</th><th>Mobile</th><th>Email</th><th>Action</th></tr>';
+            $text = '<table width="100%" class="table table-striped category-table text-center table-bordered"><tr style="background: #F9FAFF;"><th>Full Name</th><th>Mobile</th><th>Email</th><th>Action</th></tr>';
             if ($user->count() > 0) {
                 foreach ($user as $row) {
 

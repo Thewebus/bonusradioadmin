@@ -129,7 +129,7 @@
                                             <input type="hidden" name="song_url" id="song_url" class="form-control">
 
                                             <div class="form-group">
-                                                <a id="upload" class="btn text-white" style="background-color:var(--primary-color);">{{__('Label.Upload_Files')}}</a>
+                                                <a id="upload" class="btn text-white" style="background-color:#4e45b8;">{{__('Label.Upload_Files')}}</a>
                                             </div>
                                         </div>
                                     </div>

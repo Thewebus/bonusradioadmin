@@ -65,7 +65,7 @@
                                     <div class="form-group" id="upload_box" style="display:none;">
                                         <label>File (mp4, webm, mov)<span class="text-danger">*</span></label>
                                         <div id="video_container">
-                                            <a id="video_pick" class="btn text-white" style="background-color:var(--primary-color);">{{__('Label.video_source_upload')}}</a>
+                                            <a id="video_pick" class="btn text-white" style="background-color:#4e45b8;">{{__('Label.video_source_upload')}}</a>
                                             <span id="video_filelist" class="ml-2"></span> <b id="video_progress"></b>
                                         </div>
                                         <input type="hidden" name="video_file" id="video_file">
@@ -192,7 +192,7 @@
                 <div class="table-responsive table">
                     <table class="table table-striped text-center table-bordered" id="datatable">
                         <thead>
-                            <tr style="background: var(--mb-surface-2);">
+                            <tr style="background: #F9FAFF;">
                                 <th>{{__('Label.#')}}</th>
                                 <th>{{__('Label.Image')}}</th>
                                 <th>{{__('Label.Title')}}</th>
@@ -263,7 +263,7 @@
                                             <div class="form-group" id="edit_upload_box" style="display:none;">
                                                 <label>File (mp4, webm, mov)<span class="text-danger">*</span></label>
                                                 <div id="edit_video_container">
-                                                    <a id="edit_video_pick" class="btn text-white" style="background-color:var(--primary-color);">{{__('Label.video_source_upload')}}</a>
+                                                    <a id="edit_video_pick" class="btn text-white" style="background-color:#4e45b8;">{{__('Label.video_source_upload')}}</a>
                                                     <span id="edit_video_filelist" class="ml-2"></span> <b id="edit_video_progress"></b>
                                                 </div>
                                                 <input type="hidden" name="video_file" id="edit_video_file">

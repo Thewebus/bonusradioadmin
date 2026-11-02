@@ -256,7 +256,7 @@
                                     <p class="name mt-2" style="display: inline-block; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; width:100%;font-size: 16px;">{{$value->name}}</p>
                                     <div class="d-flex text-align-center">
                                         <span class="d-flex text-align-center">
-                                            <i class="fa-solid fa-play fa-xl mr-3" style="color:var(--primary-color); margin-top:12px"></i>
+                                            <i class="fa-solid fa-play fa-xl mr-3" style="color:#4e45b8; margin-top:12px"></i>
                                             <h5 class="counting" data-count="{{No_Format($value->total_play ?? 0)}}">{{No_Format($value->total_play ?? 0)}}</h5>
                                         </span>
                                     </div>
@@ -327,7 +327,7 @@
                                     <p class="name mt-2" style="display: inline-block; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; width:100%;font-size: 16px;">{{$value->title}}</p>
                                     <div class="d-flex text-align-center">
                                         <span class="d-flex text-align-center">
-                                            <i class="fa-solid fa-play fa-xl mr-3" style="color:var(--primary-color); margin-top:12px"></i>
+                                            <i class="fa-solid fa-play fa-xl mr-3" style="color:#4e45b8; margin-top:12px"></i>
                                             <h5 class="counting" data-count="{{No_Format($value->total_play ?? 0)}}">{{No_Format($value->total_play ?? 0)}}</h5>
                                         </span>
                                     </div>
@@ -354,7 +354,7 @@
             datasets: [{
                 label: 'Users',
                 data: cData['sum'],
-                backgroundColor: mbChart.primary,
+                backgroundColor: '#4e45b8',
             }],
         };
         var options = {
@@ -364,7 +364,7 @@
                 position: "top",
                 text: "Join Users Statistice (Current Year)",
                 fontSize: 18,
-                fontColor: mbChart.text
+                fontColor: "#000"
             },
             legend: {
                 title: "text",
@@ -372,7 +372,7 @@
                 position: 'top',
                 labels: {
                     fontSize: 16,
-                    fontColor: mbChart.text,
+                    fontColor: "#000000",
                 }
             },
             scales: {
@@ -381,7 +381,7 @@
                         display: true,
                         labelString: 'Total Count',
                         fontSize: 16,
-                        fontColor: mbChart.text,
+                        fontColor: "#000000",
                     },
                 }],
                 xAxes: [{
@@ -389,7 +389,7 @@
                         display: true,
                         labelString: 'Month',
                         fontSize: 16,
-                        fontColor: mbChart.text,
+                        fontColor: "#000000",
                     }
                 }]
             }
@@ -431,7 +431,7 @@
                 datasets: [{
                     label: 'Users',
                     data: cData['sum'],
-                    backgroundColor: mbChart.primary,
+                    backgroundColor: '#4e45b8',
                 }],
             };
             var options = {
@@ -441,7 +441,7 @@
                     position: "top",
                     text: "Join Users Statistice (Current Month)",
                     fontSize: 18,
-                    fontColor: mbChart.text
+                    fontColor: "#000"
                 },
                 legend: {
                     title: "text",
@@ -449,7 +449,7 @@
                     position: 'top',
                     labels: {
                         fontSize: 16,
-                        fontColor: mbChart.text,
+                        fontColor: "#000000",
                     }
                 },
                 scales: {
@@ -458,7 +458,7 @@
                             display: true,
                             labelString: 'Total Count',
                             fontSize: 16,
-                            fontColor: mbChart.text,
+                            fontColor: "#000000",
                         },
                     }],
                     xAxes: [{
@@ -466,7 +466,7 @@
                             display: true,
                             labelString: 'Date',
                             fontSize: 16,
-                            fontColor: mbChart.text,
+                            fontColor: "#000000",
                         }
                     }]
                 }
@@ -483,7 +483,7 @@
             //get the pie chart canvas
             var cData = JSON.parse(`<?php echo $package; ?>`);
             var ctx = $("#MyChart");
-            var backcolor = mbChart.series;
+            var backcolor = ["#6D3A74", "#528BA6", "#2A445E", "#E99E75", "#00bfa0", "#9b19f5", "#ffa300", "#dc0ab4", "#7c1158", "#b30000"];
 
             const datasetValue = [];
             for (let i = 0; i < cData['label'].length; i++) {
@@ -508,7 +508,7 @@
                     position: "top",
                     text: "Package Earning Statistice (Current Year)",
                     fontSize: 18,
-                    fontColor: mbChart.text
+                    fontColor: "#000"
                 },
                 legend: {
                     title: "text",
@@ -516,7 +516,7 @@
                     position: 'top',
                     labels: {
                         fontSize: 16,
-                        fontColor: mbChart.text,
+                        fontColor: "#000000",
                     }
                 },
                 scales: {
@@ -525,7 +525,7 @@
                             display: true,
                             labelString: 'Amount',
                             fontSize: 16,
-                            fontColor: mbChart.text,
+                            fontColor: "#000000",
                         },
                     }],
                     xAxes: [{
@@ -533,7 +533,7 @@
                             display: true,
                             labelString: 'Month',
                             fontSize: 16,
-                            fontColor: mbChart.text,
+                            fontColor: "#000000",
                         }
                     }]
                 }

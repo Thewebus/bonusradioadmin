@@ -12,25 +12,6 @@
     <!-- Title Tag  -->
     <title>{{ App_Name() }}</title>
 
-    <!-- Theme (Auto/Jour/Nuit, as in the app): set before anything paints. -->
-    <script>
-        (function () {
-            var saved = 'auto';
-            try { saved = localStorage.getItem('mybonus-admin-theme') || 'auto'; } catch (e) {}
-            var dark = saved === 'dark' || (saved === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-            // Chart.js colors (dashboard), which CSS can't reach.
-            window.mbChart = dark
-                ? { primary: '#ec4899', text: '#b9afcb', grid: 'rgba(255,255,255,0.08)', series: ['#ec4899', '#8b5cf6', '#3b82f6', '#00f5ff', '#ffbe0b', '#34d399', '#f472b6', '#a78bfa', '#60a5fa', '#ff006e'] }
-                : { primary: '#ff452d', text: '#6f6558', grid: 'rgba(58,36,22,0.1)', series: ['#ff452d', '#3a2416', '#f5c400', '#3fa34d', '#3b82c4', '#7b5cfa', '#b58900', '#c4301b', '#1b5e2a', '#8a241a'] };
-        })();
-    </script>
-
-    <!-- App fonts: Inter (text), Playfair Display (headlines) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
     <link href="{{asset('assets/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{asset('assets/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{asset('assets/css/toastr.min.css')}}" rel="stylesheet" type="text/css">
@@ -43,9 +24,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.css">
     <!-- Date Time Picker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
-
-    <!-- myBonus theme: must stay after every other stylesheet -->
-    <link href="{{asset('assets/css/mybonus-theme.css') }}" rel="stylesheet">
 
     <!-- base_url -->
     <input type="hidden" value="{{URL('')}}" id="base_url">
@@ -71,6 +49,9 @@
             height: auto !important;
         }
 
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border: 1px solid #4e45b8 !important;
+        }
     </style>
 
     <!--Custom Script-->
@@ -124,30 +105,6 @@
     <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
     <script>
-        // Theme button (header): Auto -> Jour -> Nuit. Charts take their colors
-        // at creation, so a page holding one reloads.
-        function mbThemeIcon() {
-            var saved = 'auto';
-            try { saved = localStorage.getItem('mybonus-admin-theme') || 'auto'; } catch (e) {}
-            var labels = { auto: 'Thème : automatique', light: 'Thème : jour', dark: 'Thème : nuit' };
-            var icons = { auto: 'fa-circle-half-stroke', light: 'fa-sun', dark: 'fa-moon' };
-            $('#mb-theme-toggle').attr({ title: labels[saved], 'aria-label': labels[saved] })
-                .find('i').attr('class', 'fa-solid ' + icons[saved]);
-        }
-        $(function () {
-            mbThemeIcon();
-            $('#mb-theme-toggle').on('click', function () {
-                var order = ['auto', 'light', 'dark'], saved = 'auto';
-                try { saved = localStorage.getItem('mybonus-admin-theme') || 'auto'; } catch (e) {}
-                var next = order[(order.indexOf(saved) + 1) % 3];
-                try { localStorage.setItem('mybonus-admin-theme', next); } catch (e) {}
-                var dark = next === 'dark' || (next === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-                mbThemeIcon();
-                if (document.querySelector('canvas')) location.reload();
-            });
-        });
-
         // Counter
         $('.counting').each(function() {
             var $this = $(this),

@@ -20,6 +20,11 @@
             </div>
         @endif
 
+        <!-- Theme -->
+        <button type="button" id="mb-theme-toggle" class="btn">
+            <i class="fa-solid fa-circle-half-stroke fa-2xl primary-color"></i>
+        </button>
+
         <!-- Setting -->
         <a href="{{ route('setting') }}" class="btn" title="Setting">
             <i class="fa-solid fa-gear fa-2xl primary-color"></i>

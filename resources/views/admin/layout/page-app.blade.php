@@ -12,10 +12,13 @@
     <!-- Title Tag  -->
     <title>{{ App_Name() }}</title>
 
-    <!-- Theme, as the app on Auto: follows the system, set before anything paints. -->
+    <!-- Theme, as in the app: Auto (follows the system), Jour or Nuit, chosen with the
+         header button and set before anything paints. -->
     <script>
         (function () {
-            var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var saved = 'auto';
+            try { saved = localStorage.getItem('mybonus-admin-theme') || 'auto'; } catch (e) {}
+            var dark = saved === 'dark' || (saved !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
             document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
             // Chart.js colors (dashboard), which CSS can't reach.
             window.mbChart = dark
@@ -122,6 +125,31 @@
     <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
     <script>
+        // Header theme button: Auto -> Jour -> Nuit. Charts take their colors when
+        // created, so a page holding one reloads.
+        function mbThemeSaved() {
+            try { return localStorage.getItem('mybonus-admin-theme') || 'auto'; } catch (e) { return 'auto'; }
+        }
+        function mbThemeButton() {
+            var labels = { auto: 'Thème : automatique', light: 'Thème : jour', dark: 'Thème : nuit' };
+            var icons = { auto: 'fa-circle-half-stroke', light: 'fa-sun', dark: 'fa-moon' };
+            var saved = mbThemeSaved();
+            $('#mb-theme-toggle').attr({ title: labels[saved], 'aria-label': labels[saved] })
+                .find('i').attr('class', 'fa-solid fa-2xl primary-color ' + icons[saved]);
+        }
+        $(function () {
+            mbThemeButton();
+            $('#mb-theme-toggle').on('click', function () {
+                var order = ['auto', 'light', 'dark'];
+                var next = order[(order.indexOf(mbThemeSaved()) + 1) % 3];
+                try { localStorage.setItem('mybonus-admin-theme', next); } catch (e) {}
+                var dark = next === 'dark' || (next === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+                mbThemeButton();
+                if (document.querySelector('canvas')) location.reload();
+            });
+        });
+
         // Counter
         $('.counting').each(function() {
             var $this = $(this),

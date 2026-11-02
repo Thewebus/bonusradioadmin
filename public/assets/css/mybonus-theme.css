@@ -3,7 +3,7 @@
    resize anything (no margin, width, display... outside input fields).
    ABIDJAN (day) / LIVE NEON (night), from the app's lib/utils/color.dart.
    Loaded last in layout/page-app.blade.php, whose head script sets data-theme
-   on <html> from the system preference. */
+   on <html> from the header button's choice (Auto follows the system). */
 
 :root {
     --mb-bg: #f7f1e6;
@@ -248,6 +248,13 @@ hr,
 
 .sidebar .side-menu .side_line.active a::after {
     background: #ffffff;
+}
+
+/* A real <button>: without the browser's gray, like its neighbor links. */
+#mb-theme-toggle {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
 }
 
 /* ---------- Dropdowns, modals ---------- */

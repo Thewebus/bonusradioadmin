@@ -1,0 +1,612 @@
+/* myBonus admin theme: the mobile app's colors and fonts on the existing
+   interface. Colors, fonts and input fields ONLY: no rule here may move or
+   resize anything (no margin, width, display... outside input fields).
+   ABIDJAN (day) / LIVE NEON (night), from the app's lib/utils/color.dart.
+   Loaded last in layout/page-app.blade.php, whose head script sets data-theme
+   on <html> from the system preference. */
+
+:root {
+    --mb-bg: #f7f1e6;
+    --mb-surface: #ffffff;
+    --mb-surface-2: #fbf7ef;
+    --mb-chip: #f1e9da;
+    --mb-border: #e0d8c8;
+    --mb-ink: #1b1410;
+    --mb-ink-2: #6f6558;
+    --mb-accent: #ff452d;
+    --mb-accent-fill: #ff452d;
+    --mb-accent-text: #c4301b;
+    --mb-accent-soft: rgba(255, 69, 45, 0.1);
+    --mb-focus: rgba(255, 69, 45, 0.22);
+    --mb-side-bg: #3a2416;
+    --mb-side-ink: #d8c9b5;
+    --mb-side-label: #a8957d;
+    --mb-side-line: rgba(255, 254, 214, 0.22);
+    /* abidjanBokehGradients + the mini-player brown */
+    --mb-card-1: linear-gradient(135deg, #ff6b4a, #b8241a);
+    --mb-card-2: linear-gradient(135deg, #3fa34d, #1b5e2a);
+    --mb-card-3: linear-gradient(135deg, #7b5cfa, #3a1f8a);
+    --mb-card-4: linear-gradient(135deg, #3b82c4, #1b3f6b);
+    --mb-card-5: linear-gradient(135deg, #6b4428, #3a2416);
+
+    /* Variables of the stock style.css */
+    --body-color: var(--mb-ink);
+    --primary-color: var(--mb-accent);
+    --light-color: var(--mb-border);
+    --dark-color: rgba(58, 36, 22, 0.08);
+    --sidebar-color: var(--mb-surface);
+    --sidebar-a-color: var(--mb-side-ink);
+    --sidebar-icon-color: #ffffff;
+    --border-bottom-color: var(--mb-border);
+    --table-th-tr-color: var(--mb-surface-2);
+    --table-color: var(--mb-ink);
+    --cutom-tab-color: var(--mb-chip);
+    --artist-card-color: var(--mb-chip);
+    --video-card-color: var(--mb-surface);
+    --pagination-color: var(--mb-chip);
+    --form-group: var(--mb-surface);
+    --radio-group: var(--mb-accent-soft);
+    --login-bg: var(--mb-bg);
+    --light-gray: var(--mb-ink-2);
+    --avatar-lebal: var(--mb-ink-2);
+    --input-group-color: var(--mb-border);
+    --db-card-color-before: rgba(255, 255, 255, 0.12);
+    --title-color: var(--mb-ink);
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    --mb-bg: #0d0817;
+    --mb-surface: #171225;
+    --mb-surface-2: #1e1730;
+    --mb-chip: #241a38;
+    --mb-border: #2e2444;
+    --mb-ink: #ffffff;
+    --mb-ink-2: #b9afcb;
+    --mb-accent: #ec4899;
+    --mb-accent-fill: linear-gradient(135deg, #ec4899, #8b5cf6);
+    --mb-accent-text: #f472b6;
+    --mb-accent-soft: rgba(236, 72, 153, 0.14);
+    --mb-focus: rgba(236, 72, 153, 0.3);
+    --mb-side-bg: #171225;
+    --mb-side-ink: #b9afcb;
+    --mb-side-label: #85799b;
+    --mb-side-line: #2e2444;
+    /* liveNeonBokehGradients + the wave yellow */
+    --mb-card-1: linear-gradient(135deg, #ec4899, #4a0f35);
+    --mb-card-2: linear-gradient(135deg, #10b981, #0b3b2c);
+    --mb-card-3: linear-gradient(135deg, #8b5cf6, #2e1454);
+    --mb-card-4: linear-gradient(135deg, #3b82f6, #10254f);
+    --mb-card-5: linear-gradient(135deg, #c98a00, #4a3200);
+    --dark-color: rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+}
+
+/* ---------- Fonts ---------- */
+
+html,
+body,
+label,
+input,
+select,
+textarea,
+button,
+.btn,
+.form-control,
+.table,
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* App headline font (MyText inter: 4). Lining figures: Playfair's default
+   old-style zero reads as a letter "o". */
+.page-title,
+.page-title-sm,
+.card-header,
+.box-title .title,
+.side-logo h3,
+.app-logo h1,
+.app-logo h3,
+.left-caption h1,
+.db-color-card .counter p {
+    font-family: "Playfair Display", Georgia, serif;
+    font-feature-settings: "lnum" 1;
+    font-variant-numeric: lining-nums;
+}
+
+/* ---------- Page ---------- */
+
+html,
+body,
+.right-content,
+.body-content,
+.header {
+    background: var(--mb-bg);
+    color: var(--mb-ink);
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.page-title,
+.page-title-sm,
+.box-title .title {
+    color: var(--mb-ink);
+}
+
+a,
+a:hover,
+.primary-color,
+.btn-link,
+.text-primary {
+    color: var(--mb-accent-text);
+}
+
+.primary-color,
+.btn-link,
+.text-primary {
+    color: var(--mb-accent-text) !important;
+}
+
+.text-gray,
+.text-muted,
+.light-gray,
+small {
+    color: var(--mb-ink-2) !important;
+}
+
+.text-dark {
+    color: var(--mb-ink) !important;
+}
+
+.bg-white,
+.bg-light {
+    background: var(--mb-surface) !important;
+}
+
+hr,
+.border-top,
+.border-bottom,
+.header {
+    border-color: var(--mb-border) !important;
+}
+
+.breadcrumb {
+    background: transparent;
+}
+
+.breadcrumb-item.active,
+.breadcrumb-item + .breadcrumb-item::before {
+    color: var(--mb-ink-2);
+}
+
+::selection {
+    background: var(--mb-focus);
+}
+
+* {
+    scrollbar-color: var(--mb-border) transparent;
+}
+
+/* Login: the title and text sit on a dark photo in both themes. */
+.left-caption .caption,
+.left-caption .caption h1,
+.left-caption .caption .text {
+    color: #ffffff;
+}
+
+/* ---------- Sidebar ---------- */
+
+.sidebar {
+    background: var(--mb-side-bg);
+}
+
+.sidebar .side-logo,
+.sidebar .side-logo h3,
+.sidebar .primary-color {
+    color: #ffffff !important;
+}
+
+.sidebar .side-toggle span {
+    background: #ffffff;
+}
+
+.sidebar .partition {
+    border-color: var(--mb-side-line);
+}
+
+.sidebar .partition span {
+    background: var(--mb-side-bg);
+    color: var(--mb-side-label);
+}
+
+.sidebar .side-menu a,
+.sidebar .side-menu .side-submenu a {
+    color: var(--mb-side-ink);
+}
+
+.sidebar .side-menu a:hover,
+.sidebar .side-menu .side-submenu a:hover {
+    color: #ffffff;
+}
+
+.sidebar .side-menu .active a,
+.sidebar .side-menu .side-submenu .active {
+    background: var(--mb-accent-fill);
+    color: #ffffff;
+}
+
+.sidebar .side-menu .side-submenu .active a {
+    background: transparent;
+    color: #ffffff;
+}
+
+.sidebar .side-menu .dropdown-menu {
+    background: transparent;
+    border-color: transparent;
+}
+
+.sidebar .side-menu .side_line.active a::after {
+    background: #ffffff;
+}
+
+/* ---------- Dropdowns, modals ---------- */
+
+.dropdown-menu,
+.modal-content,
+.list-group-item {
+    background: var(--mb-surface);
+    border-color: var(--mb-border);
+    color: var(--mb-ink);
+}
+
+.dropdown-item {
+    color: var(--mb-ink);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background: var(--mb-chip);
+    color: var(--mb-ink);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--mb-border);
+}
+
+.close {
+    color: var(--mb-ink);
+    text-shadow: none;
+}
+
+/* ---------- Cards ---------- */
+
+.card,
+.custom-border-card,
+.summary-table-card,
+.install-card,
+.cart-bg,
+.artist-grid-card,
+.category-box,
+.video-card,
+.hashtag-card {
+    background: var(--mb-surface);
+    border-color: var(--mb-border);
+    color: var(--mb-ink);
+}
+
+.artist-grid-card.bg-white {
+    background: var(--mb-surface) !important;
+}
+
+.custom-border-card .card-header,
+.card-header,
+.chart-summary li {
+    background: transparent;
+    border-color: var(--mb-border);
+    color: var(--mb-ink);
+}
+
+/* Dashboard counters: the app's bokeh card gradients, white text */
+.db-color-card.color1-card, .db-color-card.color6-card { background: var(--mb-card-1); }
+.db-color-card.color2-card, .db-color-card.color7-card { background: var(--mb-card-2); }
+.db-color-card.color3-card, .db-color-card.color8-card { background: var(--mb-card-3); }
+.db-color-card.color4-card, .db-color-card.color9-card { background: var(--mb-card-4); }
+.db-color-card.color5-card, .db-color-card.color10-card { background: var(--mb-card-5); }
+
+.db-color-card,
+.db-color-card .counter,
+.db-color-card .counter span,
+.db-color-card .card-icon {
+    color: #ffffff !important;
+}
+
+.db-color-card .dot-icon {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* The white-on-gradient cards' menus stay on the page's colors. */
+.db-color-card .dropdown-item {
+    color: var(--mb-accent-text) !important;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn-default,
+.btn-primary {
+    background: var(--mb-accent-fill);
+    border-color: transparent;
+    color: #ffffff;
+}
+
+.btn-default:hover,
+.btn-primary:hover {
+    background: transparent;
+    border-color: var(--mb-accent);
+    color: var(--mb-accent-text);
+}
+
+.btn-cancel,
+.btn-secondary {
+    background: var(--mb-chip);
+    border-color: var(--mb-border);
+    color: var(--mb-ink);
+}
+
+.btn-cancel:hover,
+.btn-secondary:hover {
+    background: transparent;
+    border-color: var(--mb-ink-2);
+    color: var(--mb-ink);
+}
+
+/* ---------- Input fields ---------- */
+
+.form-control,
+.custom-select,
+.custom-file-label,
+.input-group-text {
+    background-color: var(--mb-surface);
+    border: 1px solid var(--mb-border);
+    border-radius: 12px;
+    color: var(--mb-ink);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:hover,
+.custom-select:hover {
+    border-color: var(--mb-ink-2);
+}
+
+.form-control:focus,
+.custom-select:focus {
+    background-color: var(--mb-surface);
+    border-color: var(--mb-accent);
+    box-shadow: 0 0 0 3px var(--mb-focus);
+    color: var(--mb-ink);
+    outline: 0;
+}
+
+.form-control::placeholder {
+    color: var(--mb-ink-2);
+    opacity: 0.8;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+    background-color: var(--mb-chip);
+}
+
+select.form-control option {
+    background: var(--mb-surface);
+    color: var(--mb-ink);
+}
+
+/* The search bar is a frame around a borderless input. */
+.page-search {
+    background: var(--mb-surface);
+    border-color: var(--mb-border);
+    border-radius: 12px;
+}
+
+.page-search .sorting {
+    background: transparent;
+}
+
+.page-search .sorting label {
+    color: var(--mb-ink);
+}
+
+.page-search .form-control,
+.page-search .input-group-text,
+.page-search .form-control:hover,
+.page-search .form-control:focus {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.page-search:focus-within {
+    border-color: var(--mb-accent);
+    box-shadow: 0 0 0 3px var(--mb-focus);
+}
+
+.page-search .sorting .form-control,
+.page-search .sorting .custom-select,
+.dataTables_wrapper select {
+    background-color: var(--mb-surface);
+    border: 1px solid var(--mb-border);
+    color: var(--mb-ink);
+}
+
+.select2-container .select2-selection--single,
+.select2-container .select2-selection--multiple,
+.select2-dropdown {
+    background: var(--mb-surface) !important;
+    border: 1px solid var(--mb-border) !important;
+    border-radius: 12px !important;
+    color: var(--mb-ink);
+}
+
+.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: var(--mb-accent) !important;
+    box-shadow: 0 0 0 3px var(--mb-focus);
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--mb-ink);
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected],
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background: var(--mb-accent);
+    color: #ffffff;
+}
+
+.select2-container--default .select2-results__option[aria-selected="true"] {
+    background: var(--mb-chip);
+}
+
+.select2-search__field {
+    background: var(--mb-surface);
+    color: var(--mb-ink);
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    background: var(--mb-accent);
+    border-color: var(--mb-accent);
+}
+
+.custom-control-label,
+.radio-group {
+    color: var(--mb-ink);
+}
+
+.note-editor.note-frame,
+.note-editor.note-airframe {
+    border-color: var(--mb-border) !important;
+}
+
+.note-toolbar,
+.note-statusbar {
+    background: var(--mb-chip) !important;
+}
+
+.note-editing-area .note-editable {
+    background: var(--mb-surface);
+    color: var(--mb-ink);
+}
+
+.avatar-upload .avatar-preview,
+.avatar-upload-landscape .avatar-preview {
+    background: var(--mb-chip);
+    border-color: var(--mb-border);
+}
+
+.avatar-upload .avatar-edit label,
+.avatar-upload-landscape .avatar-edit label {
+    background: var(--mb-surface);
+    border-color: var(--mb-border);
+    color: var(--mb-ink);
+}
+
+/* The upload placeholder is a gray picture, too faint on the night chip. */
+:root[data-theme="dark"] .avatar-preview img[src*="upload_img"] {
+    filter: brightness(2);
+}
+
+/* ---------- Tabs ---------- */
+
+.custom-tabs .nav-link {
+    color: var(--mb-ink);
+}
+
+.custom-tabs .nav-link.active {
+    background: var(--mb-accent-fill);
+    color: #ffffff;
+}
+
+.nav-tabs {
+    border-color: var(--mb-border);
+}
+
+.nav-tabs .nav-link {
+    color: var(--mb-ink-2);
+}
+
+.nav-tabs .nav-link.active {
+    background: var(--mb-surface);
+    border-color: var(--mb-border);
+    color: var(--mb-ink);
+}
+
+.badge-primary {
+    background: var(--mb-accent);
+}
+
+/* ---------- Tables ---------- */
+
+.table {
+    background-color: var(--mb-surface) !important;
+    color: var(--mb-ink);
+}
+
+.table thead th {
+    background: var(--mb-surface-2);
+    border-color: var(--mb-border);
+    color: var(--mb-ink-2);
+}
+
+.table td,
+.table th {
+    border-color: var(--mb-border);
+}
+
+.table tbody tr:hover {
+    color: var(--mb-ink);
+}
+
+/* DataTables paints rows white. */
+table.dataTable tbody tr {
+    background-color: transparent;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: var(--mb-accent-soft);
+}
+
+/* Table actions: Edit is a link, Delete a form's button; only Delete is red. */
+a.edit-delete-btn {
+    background: var(--mb-chip);
+    color: var(--mb-ink) !important;
+}
+
+button.edit-delete-btn {
+    background: #d92d20;
+}
+
+.dataTables_info,
+.dataTables_length,
+.dataTables_filter {
+    color: var(--mb-ink-2) !important;
+}
+
+.page-link {
+    background: var(--mb-surface);
+    border-color: var(--mb-border);
+    color: var(--mb-ink);
+}
+
+.page-item.active .page-link {
+    background: var(--mb-accent);
+    border-color: var(--mb-accent);
+    color: #ffffff;
+}
+
+.page-item.disabled .page-link {
+    background: var(--mb-surface-2);
+    border-color: var(--mb-border);
+    color: var(--mb-ink-2);
+}

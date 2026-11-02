@@ -58,7 +58,7 @@
             <div class="table-responsive table">
                 <table class="table table-striped text-center table-bordered" id="datatable">
                     <thead>
-                        <tr style="background: #F9FAFF;">
+                        <tr style="background: var(--mb-surface-2);">
                             <th>{{__('Label.#')}}</th>
                             <th>{{__('Label.User')}}</th>
                             <th>{{__('Label.Email')}}</th>
@@ -75,7 +75,7 @@
                     </thead>
                     <tbody></tbody>
                     <tfoot>
-                        <tr style="background: #F9FAFF;">
+                        <tr style="background: var(--mb-surface-2);">
                             <td colspan="12" class="text-center"></td>
                         </tr>
                     </tfoot>

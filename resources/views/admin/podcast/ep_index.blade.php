@@ -65,12 +65,12 @@
                             <ul class="list-inline overlap-control" aria-labelledby="dropdownMenuLink">
                                 <li class="list-inline-item">
                                     <a class="btn" href="{{route('podcast.episode.edit', [$podcasts_id, $value->id])}}" title="Edit">
-                                        <i class="fa-solid fa-pen-to-square fa-xl" class="dot-icon" style="color: #4e45b8;"></i>
+                                        <i class="fa-solid fa-pen-to-square fa-xl" class="dot-icon" style="color: var(--primary-color);"></i>
                                     </a>
                                 </li>
                                 <li class="list-inline-item">
                                     <a class="btn" href="{{route('podcast.episode.delete', [$podcasts_id, $value->id])}}" title="Delete" onclick="return confirm('Are you sure !!! You want to Delete this Episode ?')">
-                                        <i class="fa-solid fa-trash-can fa-xl" class="dot-icon" style="color: #4e45b8;"></i>
+                                        <i class="fa-solid fa-trash-can fa-xl" class="dot-icon" style="color: var(--primary-color);"></i>
                                     </a>
                                 </li>
                             </ul>
@@ -79,7 +79,7 @@
                             <h5 class="card-title">{{$value->name}}</h5>
                             <div class="d-flex text-align-center">
                                 <span class="d-flex text-align-center">
-                                    <i class="fa-solid fa-play fa-xl mr-3" style="color:#4e45b8; margin-top:12px"></i>
+                                    <i class="fa-solid fa-play fa-xl mr-3" style="color:var(--primary-color); margin-top:12px"></i>
                                     <h5 class="counting" data-count="{{No_Format($value->total_play ?? 0)}}">{{No_Format($value->total_play)}}</h5>
                                 </span>
                             </div>

@@ -32,14 +32,14 @@
         }
 
         .message-box h1 {
-            color: #4e45b8;
+            color: #ff452d;
             font-size: 200px;
             line-height: 50px;
             margin-left: 50px;
         }
 
         .message-box p {
-            color: #4e45b8;
+            color: #ff452d;
             font-size: 50px;
             line-height: 50px;
             margin-top: 60px;
@@ -47,7 +47,7 @@
         }
 
         .message-box h5 {
-            color: #4e45b8;
+            color: #ff452d;
             font-size: 22px;
             margin-left: 10px;
             margin-left: -20px;
@@ -79,7 +79,7 @@
         }
 
         .btn-default {
-            background: #4e45b8;
+            background: #ff452d;
             border-radius: 50px;
             font-size: 18px;
             font-weight: 600;
@@ -94,9 +94,9 @@
         }
 
         .btn-default:hover {
-            color: #4e45b8;
+            color: #ff452d;
             background: transparent;
-            border-color: #4e45b8;
+            border-color: #ff452d;
         }
 
         @keyframes float {

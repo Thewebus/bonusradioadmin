@@ -57,7 +57,7 @@
                     <div class="table-responsive table">
                         <table class="table table-striped text-center table-bordered" id="datatable">
                             <thead>
-                                <tr style="background: #F9FAFF;">
+                                <tr style="background: var(--mb-surface-2);">
                                     <th>{{__('Label.#')}}</th>
                                     <th>Icon</th>
                                     <th>{{__('Label.Title')}}</th>

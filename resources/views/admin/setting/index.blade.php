@@ -174,7 +174,7 @@
                                 <div class="card-body">
                                     <div class="input-group">
                                         <div class="col-2">
-                                            <label class="pt-3" style="font-size:16px; font-weight:500; color:#1b1b1b">{{__('Label.API Path')}}</label>
+                                            <label class="pt-3" style="font-size:16px; font-weight:500; color: var(--mb-ink)">{{__('Label.API Path')}}</label>
                                         </div>
                                         <input type="text" readonly value="{{url('/')}}/api/" name="api_path" class="form-control" id="api_path">
                                         <div class="input-group-text ml-2" onclick="Function_Api_path()" title="Copy">
